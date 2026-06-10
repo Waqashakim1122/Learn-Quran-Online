@@ -1,0 +1,24 @@
+.stats-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.stats-count {
+    font-size: 2.5rem;
+    color: #007bff;
+}
+
+.toggle-btn {
+    margin-top: 1rem;
+}
+
+.list-unstyled li {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.list-unstyled li strong {
+    color: #007bff;
+    font-weight: bold;
+}

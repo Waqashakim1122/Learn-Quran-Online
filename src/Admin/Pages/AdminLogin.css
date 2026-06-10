@@ -1,0 +1,68 @@
+.admin-login-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f7f7f7;
+    margin-top: 10px;
+}
+
+.admin-login-container .bg-light {
+    background-color: #f8f9fa !important;
+}
+
+.admin-login-container .card {
+    border-radius: 15px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.admin-login-container .card:hover {
+    transform: scale(1.05);
+}
+
+.admin-login-container .card-body {
+    padding: 2rem;
+}
+
+.admin-login-container .text-primary {
+    color: #007bff !important;
+}
+
+.admin-login-container .form-control {
+    border-radius: 30px;
+    padding: 10px 15px;
+}
+
+.admin-login-container .btn-primary {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    transition: background-color 0.3s ease;
+}
+
+.admin-login-container .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.admin-login-container .login-image {
+    background: url('../../assetes/login\ img.jpg') no-repeat center center;
+    background-size: cover;
+    height: 100%;
+    border-radius: 15px 0 0 15px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    filter: brightness(0.7);
+}
+
+.admin-login-container .toggle-password-btn {
+    border-radius: 0 30px 30px 0;
+    padding: 10px 15px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.admin-login-container .toggle-password-btn:hover {
+    background-color: #e9ecef;
+}

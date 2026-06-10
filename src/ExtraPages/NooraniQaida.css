@@ -1,0 +1,87 @@
+.noorani-qaida {
+    background-image: url('../assetes/Bacgroumd\ image1.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 60px 0;
+    color: #fff;
+    background-color: rgba(46, 204, 113, 0.8); 
+    position: relative;
+   
+}
+
+.noorani-qaida::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+}
+
+.qaida-heading {
+    font-family: 'Tajawal', sans-serif;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-size: 36px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #fff;
+    margin-bottom: 30px;
+}
+
+.course-details {
+    padding: 0 20px;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    padding: 20px; /* Add padding around the text */
+    border-radius: 10px; /* Optional: Rounded corners */
+    color: #fff; /* Text color */
+    display: inline-block; /* Ensure the container size fits the text */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.course-details h3 {
+    font-family: 'Tajawal', sans-serif;
+    color: #fff;
+    font-size: 24px;
+    margin-top: 20px;
+    border-bottom: 1px solid #fff;
+    padding-bottom: 10px;
+}
+
+
+.course-description {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #f0f0f0;
+}
+
+.learn-list {
+    list-style-type: none;
+    padding-left: 0;
+    font-family: 'Tajawal', sans-serif;
+    color: #f0f0f0;
+}
+
+.learn-list li {
+    margin-bottom: 10px;
+}
+
+.enroll-button {
+    background-color: #fff;
+    color: #2ecc71;
+    border-color: #2ecc71;
+    font-family: 'Tajawal', sans-serif;
+    font-weight: bold;
+}
+
+.enroll-button:hover {
+    background-color: #0e2a47;
+}
+
+img {
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+}
