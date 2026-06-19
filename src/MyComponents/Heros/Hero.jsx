@@ -11,7 +11,12 @@ const Hero = () => {
 
         <div className="hero-eyebrow">Online Quran Academy — UK & USA</div>
 
-        <div className="hero-bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
+        <div className="hero-bismillah">
+          اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ
+        </div>
+        <p className="hero-verse-translation">
+          "Read in the name of your Lord who created" — Surah Al-Alaq 96:1
+        </p>
 
         <p className="hero-sub">Most Sought-After Online Quran Academy in UK & USA</p>
 
@@ -35,7 +40,6 @@ const Hero = () => {
         </div>
 
         <div className="hero-feats">
-
           <div className="hero-feat">
             <div className="hero-feat-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="#C9A227" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -48,8 +52,6 @@ const Hero = () => {
               <span>Qualified & experienced</span>
             </div>
           </div>
-
-          <div className="hero-feat-div"></div>
 
           <div className="hero-feat">
             <div className="hero-feat-icon">
@@ -64,8 +66,6 @@ const Hero = () => {
               <span>Personal attention</span>
             </div>
           </div>
-
-          <div className="hero-feat-div"></div>
 
           <div className="hero-feat">
             <div className="hero-feat-icon">
@@ -82,8 +82,6 @@ const Hero = () => {
             </div>
           </div>
 
-          <div className="hero-feat-div"></div>
-
           <div className="hero-feat">
             <div className="hero-feat-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="#C9A227" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -97,8 +95,8 @@ const Hero = () => {
               <span>UK, USA & worldwide</span>
             </div>
           </div>
-
         </div>
+
       </div>
     </section>
   );
