@@ -9,55 +9,32 @@ import Icon2 from '../../assetes/icon.2.png'
 import Icon3 from '../../assetes/icon.3.png'
 import Icon4 from '../../assetes/icon.4.png'
 
+const programs = [
+  { img: Program1, icon: Icon1, title: 'Quran Memorization' },
+  { img: Program2, icon: Icon2, title: 'Quran Recitation' },
+  { img: Program3, icon: Icon3, title: 'Quran Translation' },
+  { img: Program4, icon: Icon4, title: 'Noorani Qaida' },
+];
+
 const Program = () => {
   return (
-    <>
-      <div className='programs'>
-        <div class="container text-center ">
-          <div class="row">
-            <div className='col-12 col-md-3 '>
+    <div className='programs'>
+      <div className="container text-center">
+        <div className="row g-4">
+          {programs.map((p, i) => (
+            <div className='col-12 col-sm-6 col-md-3' key={i}>
               <div className='program'>
-                <img src={Program1} alt="" />
+                <img src={p.img} alt={p.title} />
                 <div className='capstion'>
-                  <img src={Icon1} alt="" />
-                  <p>Quran Memorization</p>
+                  <img src={p.icon} alt="" />
+                  <p>{p.title}</p>
                 </div>
               </div>
             </div>
-
-            <div class="col-12 col-md-3 ">
-              <div className='program'>
-                <img src={Program2} alt="" />
-                <div className='capstion'>
-                  <img src={Icon2} alt="" />
-                  <p>Quran Recitation</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-md-3 ">
-              <div className='program'>
-                <img src={Program3} alt="" />
-                <div className='capstion'>
-                  <img src={Icon3} alt="" />
-                  <p>Quran Translation</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-md-3 ">
-              <div className='program'>
-                <img src={Program4} alt="" />
-                <div className='capstion'>
-                  <img src={Icon4} alt="" />
-                  <p>Noorani Qaida</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
-      
-    </>
+    </div>
   )
 }
-
 export default Program
