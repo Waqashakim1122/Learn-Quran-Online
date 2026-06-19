@@ -3,59 +3,37 @@
 .hero {
   width: 100%;
   min-height: 92vh;
-  background: linear-gradient(
-      rgba(11, 61, 46, 0.55),
-      rgba(11, 61, 46, 0.60)
-    ),
-    url(../../assetes/Hero.jpg) center / cover no-repeat;
-  color: #FAF6EE;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  background: #FAF6EE;
   position: relative;
   overflow: hidden;
   font-family: 'Inter', sans-serif;
 }
 
-.hero-pat-tr {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 300px;
-  height: 300px;
-  background-image: repeating-linear-gradient(
-    135deg,
-    rgba(201, 162, 39, 0.13) 0px,
-    rgba(201, 162, 39, 0.13) 6px,
-    transparent 6px,
-    transparent 18px
-  );
-  pointer-events: none;
-}
-
-.hero-pat-bl {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 200px;
-  height: 200px;
-  background-image: repeating-linear-gradient(
-    135deg,
-    rgba(201, 162, 39, 0.09) 0px,
-    rgba(201, 162, 39, 0.09) 6px,
-    transparent 6px,
-    transparent 18px
-  );
-  pointer-events: none;
-}
-
-.hero-inner {
-  text-align: center;
-  max-width: 760px;
-  padding: 72px 32px 48px;
+.hero-text-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 64px 80px 80px;
   position: relative;
   z-index: 2;
-  width: 100%;
+}
+
+.hero-pat {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 220px;
+  height: 220px;
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(27, 67, 50, 0.06) 0px,
+    rgba(27, 67, 50, 0.06) 6px,
+    transparent 6px,
+    transparent 18px
+  );
+  pointer-events: none;
 }
 
 .hero-eyebrow {
@@ -67,53 +45,48 @@
   letter-spacing: 0.13em;
   text-transform: uppercase;
   color: #C9A227;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
-.hero-eyebrow::before,
-.hero-eyebrow::after {
+.hero-eyebrow::before {
   content: '';
   width: 36px;
   height: 1px;
   background: #C9A227;
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
-/* Quranic Verse */
 .hero-bismillah {
-  font-size: 1.75rem;
-  color: #FAF6EE;
+  font-size: 1.55rem;
+  color: #1B4332;
   margin-bottom: 6px;
   line-height: 1.7;
   font-family: serif;
-  text-shadow: 0 1px 8px rgba(0,0,0,0.4);
 }
 
 .hero-verse-translation {
   font-size: 12px;
   color: #C9A227;
   font-style: italic;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
   letter-spacing: 0.02em;
-  opacity: 0.9;
 }
 
 .hero-sub {
   font-size: 13px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.82);
+  color: #6B7280;
   margin-bottom: 10px;
   letter-spacing: 0.015em;
 }
 
 .hero-title {
   font-family: 'Playfair Display', serif;
-  font-size: 54px;
+  font-size: 50px;
   font-weight: 700;
   line-height: 1.13;
-  color: #ffffff;
-  margin-bottom: 16px;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  color: #1B4332;
+  margin-bottom: 18px;
 }
 
 .hero-title em {
@@ -123,25 +96,22 @@
 
 .hero-desc {
   font-size: 15.5px;
-  color: rgba(255, 255, 255, 0.85);
-  max-width: 520px;
-  margin: 0 auto 36px;
+  color: #4B5563;
+  max-width: 460px;
+  margin: 0 0 36px;
   line-height: 1.75;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.2);
 }
 
-/* Buttons */
 .hero-btns {
   display: flex;
   gap: 12px;
-  justify-content: center;
   flex-wrap: wrap;
   margin-bottom: 48px;
 }
 
 .hero-btn-gold {
   background: #C9A227;
-  color: #0B3D2E !important;
+  color: #1B4332 !important;
   font-family: 'Inter', sans-serif;
   font-weight: 700;
   font-size: 14px;
@@ -158,7 +128,7 @@
 .hero-btn-gold svg {
   width: 16px;
   height: 16px;
-  stroke: #0B3D2E;
+  stroke: #1B4332;
   fill: none;
   stroke-width: 2.5;
   stroke-linecap: round;
@@ -168,60 +138,47 @@
 .hero-btn-gold:hover {
   background: #DEB840;
   transform: translateY(-1px);
-  color: #0B3D2E !important;
+  color: #1B4332 !important;
 }
 
 .hero-btn-outline {
   background: transparent;
-  color: #ffffff !important;
+  color: #1B4332 !important;
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 14px;
   padding: 12px 28px;
   border-radius: 8px;
-  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  border: 1.5px solid #1B4332;
   text-decoration: none !important;
   display: inline-block;
   transition: all 0.18s;
 }
 
 .hero-btn-outline:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.8);
+  background: rgba(27, 67, 50, 0.06);
 }
 
-/* Feature Bar */
 .hero-feats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  padding-top: 32px;
-  max-width: 700px;
-  margin: 0 auto;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 16px;
+  border-top: 1px solid #E5E7EB;
+  padding-top: 28px;
+  max-width: 460px;
 }
 
 .hero-feat {
   display: flex;
   align-items: center;
   gap: 11px;
-  padding: 0 16px;
-  border-right: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.hero-feat:last-child {
-  border-right: none;
-}
-
-.hero-feat-div {
-  display: none;
 }
 
 .hero-feat-icon {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 10px;
-  background: rgba(201, 162, 39, 0.15);
+  background: rgba(201, 162, 39, 0.12);
   border: 1px solid rgba(201, 162, 39, 0.35);
   display: flex;
   align-items: center;
@@ -230,8 +187,8 @@
 }
 
 .hero-feat-icon svg {
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
 }
 
 .hero-feat-text {
@@ -242,34 +199,60 @@
   display: block;
   font-size: 12.5px;
   font-weight: 600;
-  color: #ffffff;
+  color: #1B4332;
   line-height: 1.3;
-  white-space: nowrap;
 }
 
 .hero-feat-text span {
   font-size: 11px;
-  color: rgba(201, 162, 39, 0.85);
+  color: #9A7B14;
   font-weight: 500;
 }
 
-/* Mobile */
-@media (max-width: 768px) {
-  .hero-title { font-size: 36px; }
-  .hero-bismillah { font-size: 1.4rem; }
-  .hero-inner { padding: 48px 20px 40px; }
-  .hero-feats {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    border-top: 1px solid rgba(255,255,255,0.12);
-  }
-  .hero-feat {
-    border-right: none;
-    padding: 0 8px;
-  }
+.hero-image-side {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-@media (max-width: 400px) {
+.hero-image-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(250,246,238,0.95) 0%, rgba(250,246,238,0) 9%);
+}
+
+.hero-image-side::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 35%;
+  background: linear-gradient(to top, rgba(11,61,46,0.35), transparent);
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .hero-text-side {
+    padding: 56px 24px 40px;
+    order: 1;
+  }
+  .hero-image-side {
+    order: 2;
+    height: 360px;
+  }
+  .hero-image-fade {
+    background: linear-gradient(180deg, rgba(250,246,238,0.95) 0%, rgba(250,246,238,0) 12%);
+  }
+  .hero-title { font-size: 38px; }
+  .hero-bismillah { font-size: 1.3rem; }
+  .hero-feats { max-width: 100%; }
+}
+
+@media (max-width: 480px) {
   .hero-feats {
     grid-template-columns: 1fr;
   }
