@@ -1,58 +1,45 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import logo from '../../assetes/navbar-logo.png';
-import './Header.css'
-
-const navItems = [
-  { to: '/', label: 'Home' },
-  { to: '/About', label: 'About' },
-  { to: '/courses', label: 'Courses' },
-  { to: '/ContactUs', label: 'Contact' },
-];
+import './Header.css';
 
 const Header = () => {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  const [open, setOpen] = useState(false);
 
   return (
-    <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
-      <nav className="navbar navbar-expand-md p-0">
-        <div className="container-fluid site-header-inner">
-          <a className="navbar-brand site-logo" href="/">
-            <img src={logo} alt="Learn Quran Online Logo" width="140" height="auto" />
+    <header className="site-header">
+      <div className="top-bar">
+        <span>🎓 <strong>Free Trial Class</strong> — No credit card required</span>
+        <span className="sep">|</span>
+        <span>Certified teachers for <strong>Men, Women & Kids</strong></span>
+        <span className="sep">|</span>
+        <span>📞 <strong>+44 7123 456789</strong></span>
+      </div>
+
+      <nav className="main-nav">
+        <div className="nav-inner">
+          <a className="logo" href="/">
+            <img src={logo} alt="Learn Quran Online" height="44" />
           </a>
+
           <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
+            className={`burger ${open ? 'open' : ''}`}
+            onClick={() => setOpen(!open)}
+            aria-label="Toggle menu"
           >
-            <span className="navbar-toggler-icon"></span>
+            <span /><span /><span />
           </button>
-          <div className="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
-            <ul className="navbar-nav mx-auto site-nav">
-              {navItems.map((item) => (
-                <li className="nav-item" key={item.to}>
-                  <NavLink className="nav-link" to={item.to} end>
-                    {item.label}
-                  </NavLink>
-                </li>
-              ))}
-              <li className="nav-item d-md-none mt-2">
-                <NavLink className="btn site-cta-btn w-100" to="/courses" role="button">
-                  Book Free Trial
-                </NavLink>
-              </li>
-            </ul>
-            <NavLink className="btn site-cta-btn d-none d-md-inline-block" to="/courses" role="button">
+
+          <div className={`nav-links ${open ? 'show' : ''}`}>
+            <NavLink to="/" end onClick={() => setOpen(false)}>Home</NavLink>
+            <NavLink to="/About" onClick={() => setOpen(false)}>About Us</NavLink>
+            <NavLink to="/courses" onClick={() => setOpen(false)}>Courses</NavLink>
+            <NavLink to="/ContactUs" onClick={() => setOpen(false)}>Contact</NavLink>
+            <NavLink
+              to="/courses"
+              className="cta-btn"
+              onClick={() => setOpen(false)}
+            >
               Book Free Trial
             </NavLink>
           </div>
