@@ -10,8 +10,7 @@ import Dashboard from './Admin/Pages/Dashboard';
 import AdminEnrollments from './Admin/Pages/AdminEnrollments';
 import AddCourse from './Admin/MyComponents/AddCources/AddCources';
 import CourseList from './Admin/Pages/CourseList';
-
-import AdminContactSubmissions from './Admin/MyComponents/Message/AdminContactSubmissions';
+import AdminContactSubmissions from './Admin/Pages/AdminContactSubmissions';
 import UserCourseList from './Pages/UserCourseList';
 import AdminLogin from './Admin/Pages/AdminLogin';
 import AdminStats from './Admin/MyComponents/AdminStats/AdminStats';
@@ -23,13 +22,13 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="About" element={<About />} />
         <Route path="ContactUs" element={<ContactUs />} />
-        <Route path="dashboard" element={<PrivateRoute element={Dashboard} />} />
         <Route path="login" element={<AdminLogin />} />
-        <Route path="Enrollments" element={<PrivateRoute element={AdminEnrollments} />} />
+        <Route path="courses" element={<UserCourseList />} />
+        <Route path="dashboard" element={<PrivateRoute element={Dashboard} />} />
+        <Route path="enrollments" element={<PrivateRoute element={AdminEnrollments} />} />
         <Route path="addCourse" element={<PrivateRoute element={AddCourse} />} />
         <Route path="courselist" element={<PrivateRoute element={CourseList} />} />
-        <Route path="/admin/contact-submissions" element={<PrivateRoute element={AdminContactSubmissions} />} />
-        <Route path="courses" element={<UserCourseList />} />
+        <Route path="contact-submissions" element={<PrivateRoute element={AdminContactSubmissions} />} />
         <Route path="adminstats" element={<PrivateRoute element={AdminStats} />} />
       </Routes>
     </AuthProvider>
