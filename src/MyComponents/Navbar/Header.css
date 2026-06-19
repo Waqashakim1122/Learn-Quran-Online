@@ -69,7 +69,7 @@
   color: var(--brand-emerald);
 }
 
-.site-cta-btn {
+.btn.site-cta-btn {
   background: var(--brand-gold);
   border: none;
   color: var(--brand-charcoal);
@@ -81,7 +81,7 @@
   transition: background 0.2s ease;
 }
 
-.site-cta-btn:hover {
+.btn.site-cta-btn:hover {
   background: var(--brand-gold-dark);
   color: var(--brand-charcoal);
 }
