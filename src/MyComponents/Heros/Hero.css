@@ -84,7 +84,7 @@
    flex-wrap: wrap;
 }
 
-.Hero-secondary-btn {
+.btn.Hero-secondary-btn {
    background: transparent;
    border: 1.5px solid #FAF6EE;
    color: #FAF6EE;
@@ -96,7 +96,7 @@
    transition: background 0.2s ease, color 0.2s ease;
 }
 
-.Hero-secondary-btn:hover {
+.btn.Hero-secondary-btn:hover {
    background: #FAF6EE;
    color: #0B3D2E;
 }
