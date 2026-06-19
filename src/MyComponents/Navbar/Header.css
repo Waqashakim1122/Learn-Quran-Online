@@ -1,0 +1,112 @@
+:root {
+  --brand-emerald: #0B3D2E;
+  --brand-emerald-light: #146356;
+  --brand-gold: #C9A227;
+  --brand-gold-dark: #A6831C;
+  --brand-cream: #FAF6EE;
+  --brand-charcoal: #1C1C1C;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--brand-cream);
+  transition: box-shadow 0.25s ease, padding 0.25s ease;
+}
+
+.site-header-inner {
+  display: flex;
+  align-items: center;
+  padding: 18px 32px;
+  transition: padding 0.25s ease;
+}
+
+.site-header.is-scrolled .site-header-inner {
+  padding: 10px 32px;
+}
+
+.site-header.is-scrolled {
+  box-shadow: 0 2px 10px rgba(11, 61, 46, 0.08);
+}
+
+.site-logo img {
+  display: block;
+}
+
+.site-nav {
+  gap: 8px;
+}
+
+.site-nav .nav-link {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--brand-charcoal);
+  padding: 8px 16px;
+  position: relative;
+}
+
+.site-nav .nav-link::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 4px;
+  height: 2px;
+  background: var(--brand-gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+}
+
+.site-nav .nav-link:hover::after,
+.site-nav .nav-link.active::after {
+  transform: scaleX(1);
+}
+
+.site-nav .nav-link.active {
+  color: var(--brand-emerald);
+}
+
+.site-cta-btn {
+  background: var(--brand-gold);
+  border: none;
+  color: var(--brand-charcoal);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 10px 22px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.site-cta-btn:hover {
+  background: var(--brand-gold-dark);
+  color: var(--brand-charcoal);
+}
+
+.site-header::after {
+  content: '';
+  display: block;
+  height: 6px;
+  width: 100%;
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--brand-emerald) 0px,
+    var(--brand-emerald) 6px,
+    var(--brand-gold) 6px,
+    var(--brand-gold) 8px,
+    var(--brand-emerald) 8px,
+    var(--brand-emerald) 14px
+  );
+}
+
+@media (max-width: 767px) {
+  .site-header-inner {
+    padding: 14px 18px;
+  }
+  .site-nav .nav-link::after {
+    display: none;
+  }
+}
