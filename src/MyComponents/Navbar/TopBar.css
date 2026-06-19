@@ -1,0 +1,38 @@
+.topbar {
+  background: #1B4332;
+  width: 100%;
+}
+
+.topbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 8px 24px;
+  flex-wrap: wrap;
+}
+
+.topbar-inner span {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+}
+
+.topbar-inner strong {
+  color: #FCD34D;
+  font-weight: 700;
+}
+
+.topbar-sep {
+  width: 1px !important;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.2);
+  display: inline-block;
+}
+
+@media (max-width: 768px) {
+  .topbar-inner span:not(:first-child) {
+    display: none;
+  }
+}
