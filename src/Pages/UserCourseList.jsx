@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Alert, Form, Modal } from 'react-bootstrap';
-import axios from 'axios';
+import { Container, Row, Col, Card, Button, Alert, Form, Modal, Badge } from 'react-bootstrap';
 import Header from '../MyComponents/Navbar/Header';
 import Footer from '../MyComponents/Footer/Footer';
+import supabase from '../lib/supabaseClient';
 
 const UserCourseList = () => {
     const [courses, setCourses] = useState([]);
     const [message, setMessage] = useState('');
+    const [messageType, setMessageType] = useState('danger');
     const [showModal, setShowModal] = useState(false);
     const [selectedCourse, setSelectedCourse] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
     const [enrollmentDetails, setEnrollmentDetails] = useState({
         name: '',
         email: '',
@@ -21,140 +24,182 @@ const UserCourseList = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await axios.get('https://665e97541e9017dc16f093eb.mockapi.io/Courses');
-                setCourses(response.data);
+                const { data, error } = await supabase
+                    .from('courses')
+                    .select('*')
+                    .order('created_at', { ascending: true });
+                if (error) throw error;
+                setCourses(data.map(course => ({ ...course, expanded: false })));
             } catch (error) {
                 setMessage('Failed to fetch courses. Please try again.');
+                setMessageType('danger');
+            } finally {
+                setLoading(false);
             }
         };
-
         fetchCourses();
     }, []);
 
     const handleEnrollClick = (course) => {
         setSelectedCourse(course);
         setShowModal(true);
+        setMessage('');
     };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setEnrollmentDetails({
-            ...enrollmentDetails,
-            [name]: value
-        });
+        setEnrollmentDetails({ ...enrollmentDetails, [name]: value });
     };
 
     const handleEnrollmentSubmit = async (e) => {
         e.preventDefault();
-        const enrollmentData = {
-            ...enrollmentDetails,
-            courseId: selectedCourse.id,
-            courseTitle: selectedCourse.title
-        };
-
+        setSubmitting(true);
         try {
-            const response = await axios.post('https://665e97541e9017dc16f093eb.mockapi.io/Enrollments', enrollmentData);
-            if (response.status === 200 || response.status === 201) {
-                setMessage('Enrollment submitted successfully!');
-                setEnrollmentDetails({
-                    name: '',
-                    email: '',
-                    age: '',
-                    gender: '',
-                    phoneNumber: '',
-                    city: ''
-                });
-                setShowModal(false);
-            } else {
-                setMessage('Failed to submit enrollment. Please try again.');
-            }
+            const { error } = await supabase
+                .from('enrollments')
+                .insert([{
+                    student_name: enrollmentDetails.name,
+                    email: enrollmentDetails.email,
+                    phone: enrollmentDetails.phoneNumber,
+                    course_id: selectedCourse.id,
+                    course_name: selectedCourse.title
+                }]);
+            if (error) throw error;
+            setMessage('Enrollment submitted successfully! We will contact you soon.');
+            setMessageType('success');
+            setEnrollmentDetails({
+                name: '',
+                email: '',
+                age: '',
+                gender: '',
+                phoneNumber: '',
+                city: ''
+            });
+            setShowModal(false);
         } catch (error) {
             setMessage('Failed to submit enrollment. Please try again.');
+            setMessageType('danger');
+        } finally {
+            setSubmitting(false);
         }
     };
 
-    const handleCloseModal = () => {
-        setShowModal(false);
+    const toggleDescription = (courseId) => {
+        setCourses(courses.map(course =>
+            course.id === courseId ? { ...course, expanded: !course.expanded } : course
+        ));
     };
 
-    const toggleDescription = (courseId) => {
-        const updatedCourses = courses.map(course => {
-            if (course.id === courseId) {
-                return {
-                    ...course,
-                    expanded: !course.expanded
-                };
-            }
-            return course;
-        });
-        setCourses(updatedCourses);
+    const getLevelBadge = (level) => {
+        const colors = {
+            'Beginner': 'success',
+            'Intermediate': 'warning',
+            'Advanced': 'danger',
+            'All Levels': 'info'
+        };
+        return colors[level] || 'secondary';
     };
 
     return (
         <>
             <Header />
-            <Container className="mt-5">
+            <Container className="mt-5 mb-5">
                 <Row>
                     <Col>
-                        <h3 className="text-center mb-4">Available Courses</h3>
-                        {message && <Alert variant="danger">{message}</Alert>}
-                        <Row>
-                            {courses.map((course) => (
-                                <Col md={4} key={course.id} className="mb-4">
-                                    <Card className="h-100">
-                                        <Card.Img variant="top" src={course.imageURL} style={{ height: '200px', objectFit: 'cover' }} />
-                                        <Card.Body>
-                                            <Card.Title>{course.title}</Card.Title>
-                                            <Card.Text>
-                                                {course.expanded ? course.description : `${course.description.slice(0, 100)}...`}
-                                                {' '}
+                        <h3 className="text-center mb-4">Our Courses</h3>
+                        {message && (
+                            <Alert variant={messageType} onClose={() => setMessage('')} dismissible>
+                                {message}
+                            </Alert>
+                        )}
+                        {loading ? (
+                            <p className="text-center">Loading courses...</p>
+                        ) : (
+                            <Row>
+                                {courses.map((course) => (
+                                    <Col md={4} key={course.id} className="mb-4">
+                                        <Card className="h-100 shadow-sm">
+                                            <Card.Img
+                                                variant="top"
+                                                src={course.image_url}
+                                                style={{ height: '200px', objectFit: 'cover' }}
+                                                onError={(e) => { e.target.src = 'https://via.placeholder.com/400x200?text=Quran+Course'; }}
+                                            />
+                                            <Card.Body className="d-flex flex-column">
+                                                <Card.Title>{course.title}</Card.Title>
+                                                <div className="mb-2">
+                                                    {course.level && (
+                                                        <Badge bg={getLevelBadge(course.level)} className="me-2">
+                                                            {course.level}
+                                                        </Badge>
+                                                    )}
+                                                    {course.duration && (
+                                                        <Badge bg="secondary">{course.duration}</Badge>
+                                                    )}
+                                                </div>
+                                                <Card.Text>
+                                                    {course.expanded
+                                                        ? course.description
+                                                        : `${course.description?.slice(0, 100)}...`}
+                                                    {' '}
+                                                    <Button
+                                                        variant="link"
+                                                        className="p-0"
+                                                        onClick={() => toggleDescription(course.id)}
+                                                    >
+                                                        {course.expanded ? 'Read Less' : 'Read More'}
+                                                    </Button>
+                                                </Card.Text>
+                                                {course.price && (
+                                                    <p className="fw-bold text-primary">{course.price}</p>
+                                                )}
                                                 <Button
-                                                    variant="link"
-                                                    onClick={() => toggleDescription(course.id)}
+                                                    variant="primary"
+                                                    className="mt-auto"
+                                                    onClick={() => handleEnrollClick(course)}
                                                 >
-                                                    {course.expanded ? 'Read Less' : 'Read More'}
+                                                    Enroll Now
                                                 </Button>
-                                            </Card.Text>
-                                            <Button variant="primary" onClick={() => handleEnrollClick(course)}>Enroll</Button>
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
-                            ))}
-                        </Row>
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
+                                ))}
+                            </Row>
+                        )}
                     </Col>
                 </Row>
             </Container>
 
-            {/* Modal for Enrollment */}
-            <Modal show={showModal} onHide={handleCloseModal} centered>
+            {/* Enrollment Modal */}
+            <Modal show={showModal} onHide={() => setShowModal(false)} centered>
                 <Modal.Header closeButton>
-                    <Modal.Title>Enroll in {selectedCourse ? selectedCourse.title : 'Course'}</Modal.Title>
+                    <Modal.Title>Enroll in {selectedCourse?.title}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleEnrollmentSubmit}>
-                        <Form.Group className="mb-3" controlId="formName">
-                            <Form.Label>Name</Form.Label>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Full Name</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder="Enter your name"
+                                placeholder="Enter your full name"
                                 name="name"
                                 value={enrollmentDetails.name}
                                 onChange={handleInputChange}
                                 required
                             />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formEmail">
-                            <Form.Label>Email address</Form.Label>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Email Address</Form.Label>
                             <Form.Control
                                 type="email"
-                                placeholder="Enter email"
+                                placeholder="Enter your email"
                                 name="email"
                                 value={enrollmentDetails.email}
                                 onChange={handleInputChange}
                                 required
                             />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formAge">
+                        <Form.Group className="mb-3">
                             <Form.Label>Age</Form.Label>
                             <Form.Control
                                 type="number"
@@ -165,10 +210,9 @@ const UserCourseList = () => {
                                 required
                             />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formGender">
+                        <Form.Group className="mb-3">
                             <Form.Label>Gender</Form.Label>
-                            <Form.Control
-                                as="select"
+                            <Form.Select
                                 name="gender"
                                 value={enrollmentDetails.gender}
                                 onChange={handleInputChange}
@@ -178,9 +222,9 @@ const UserCourseList = () => {
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
                                 <option value="other">Other</option>
-                            </Form.Control>
+                            </Form.Select>
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formPhoneNumber">
+                        <Form.Group className="mb-3">
                             <Form.Label>Phone Number</Form.Label>
                             <Form.Control
                                 type="text"
@@ -191,7 +235,7 @@ const UserCourseList = () => {
                                 required
                             />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formCity">
+                        <Form.Group className="mb-3">
                             <Form.Label>City</Form.Label>
                             <Form.Control
                                 type="text"
@@ -202,10 +246,13 @@ const UserCourseList = () => {
                                 required
                             />
                         </Form.Group>
-                        <Form.Control type="hidden" name="courseId" value={selectedCourse ? selectedCourse.id : ''} />
-                        <Form.Control type="hidden" name="courseTitle" value={selectedCourse ? selectedCourse.title : ''} />
-                        <Button variant="primary" type="submit" className="w-100">
-                            Submit
+                        <Button
+                            variant="primary"
+                            type="submit"
+                            className="w-100"
+                            disabled={submitting}
+                        >
+                            {submitting ? 'Submitting...' : 'Submit Enrollment'}
                         </Button>
                     </Form>
                 </Modal.Body>
