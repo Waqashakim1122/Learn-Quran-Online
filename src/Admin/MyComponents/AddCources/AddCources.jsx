@@ -1,38 +1,58 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, Card, Alert } from 'react-bootstrap';
-import axios from 'axios';
-
 import AdminSidebar from '../Sidebar/Sidebar';
 import AdminNavbar from '../AdminNavebar/Adminnavbar';
+import supabase from '../../../lib/supabaseClient';
 
 const AddCourse = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [instructor, setInstructor] = useState('');
     const [imageURL, setImageURL] = useState('');
+    const [duration, setDuration] = useState('');
+    const [level, setLevel] = useState('');
+    const [price, setPrice] = useState('');
     const [message, setMessage] = useState('');
+    const [messageType, setMessageType] = useState('info');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const courseData = { title, description, instructor, imageURL };
+        setLoading(true);
+        setMessage('');
 
         try {
-            const response = await axios.post('https://665e97541e9017dc16f093eb.mockapi.io/Courses', courseData);
-            if (response.status === 200 || response.status === 201) {
-                setMessage('Course added successfully!');
-                setTitle('');
-                setDescription('');
-                setInstructor('');
-                setImageURL('');
-            }
+            const { error } = await supabase
+                .from('courses')
+                .insert([{
+                    title,
+                    description,
+                    image_url: imageURL,
+                    duration,
+                    level,
+                    price
+                }]);
+
+            if (error) throw error;
+
+            setMessage('Course added successfully!');
+            setMessageType('success');
+            setTitle('');
+            setDescription('');
+            setImageURL('');
+            setDuration('');
+            setLevel('');
+            setPrice('');
         } catch (error) {
             setMessage('Failed to add course. Please try again.');
+            setMessageType('danger');
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <>
-          <AdminNavbar/>
+            <AdminNavbar />
             <Container fluid>
                 <Row>
                     <Col md={3} className="sidebar-column">
@@ -45,20 +65,24 @@ const AddCourse = () => {
                                     <Card>
                                         <Card.Body>
                                             <h3 className="text-center mb-4">Add New Course</h3>
-                                            {message && <Alert variant="info">{message}</Alert>}
+                                            {message && (
+                                                <Alert variant={messageType} onClose={() => setMessage('')} dismissible>
+                                                    {message}
+                                                </Alert>
+                                            )}
                                             <Form onSubmit={handleSubmit}>
-                                                <Form.Group className="mb-3" controlId="formCourseTitle">
+                                                <Form.Group className="mb-3">
                                                     <Form.Label>Course Title</Form.Label>
                                                     <Form.Control
                                                         type="text"
-                                                        placeholder="Enter course title"
+                                                        placeholder="e.g. Quran Nazra"
                                                         value={title}
                                                         onChange={(e) => setTitle(e.target.value)}
                                                         required
                                                     />
                                                 </Form.Group>
 
-                                                <Form.Group className="mb-3" controlId="formCourseDescription">
+                                                <Form.Group className="mb-3">
                                                     <Form.Label>Course Description</Form.Label>
                                                     <Form.Control
                                                         as="textarea"
@@ -70,30 +94,61 @@ const AddCourse = () => {
                                                     />
                                                 </Form.Group>
 
-                                                <Form.Group className="mb-3" controlId="formInstructor">
-                                                    <Form.Label>Instructor</Form.Label>
-                                                    <Form.Control
-                                                        type="text"
-                                                        placeholder="Enter instructor name"
-                                                        value={instructor}
-                                                        onChange={(e) => setInstructor(e.target.value)}
-                                                        required
-                                                    />
-                                                </Form.Group>
-
-                                                <Form.Group className="mb-3" controlId="formImageURL">
+                                                <Form.Group className="mb-3">
                                                     <Form.Label>Course Image URL</Form.Label>
                                                     <Form.Control
                                                         type="text"
-                                                        placeholder="Enter image URL"
+                                                        placeholder="e.g. https://images.unsplash.com/..."
                                                         value={imageURL}
                                                         onChange={(e) => setImageURL(e.target.value)}
                                                         required
                                                     />
                                                 </Form.Group>
 
-                                                <Button variant="primary" type="submit" className="w-100">
-                                                    Add Course
+                                                <Form.Group className="mb-3">
+                                                    <Form.Label>Duration</Form.Label>
+                                                    <Form.Control
+                                                        type="text"
+                                                        placeholder="e.g. 3 Months"
+                                                        value={duration}
+                                                        onChange={(e) => setDuration(e.target.value)}
+                                                        required
+                                                    />
+                                                </Form.Group>
+
+                                                <Form.Group className="mb-3">
+                                                    <Form.Label>Level</Form.Label>
+                                                    <Form.Select
+                                                        value={level}
+                                                        onChange={(e) => setLevel(e.target.value)}
+                                                        required
+                                                    >
+                                                        <option value="">Select Level</option>
+                                                        <option value="Beginner">Beginner</option>
+                                                        <option value="Intermediate">Intermediate</option>
+                                                        <option value="Advanced">Advanced</option>
+                                                        <option value="All Levels">All Levels</option>
+                                                    </Form.Select>
+                                                </Form.Group>
+
+                                                <Form.Group className="mb-3">
+                                                    <Form.Label>Price</Form.Label>
+                                                    <Form.Control
+                                                        type="text"
+                                                        placeholder="e.g. $20/month"
+                                                        value={price}
+                                                        onChange={(e) => setPrice(e.target.value)}
+                                                        required
+                                                    />
+                                                </Form.Group>
+
+                                                <Button
+                                                    variant="primary"
+                                                    type="submit"
+                                                    className="w-100"
+                                                    disabled={loading}
+                                                >
+                                                    {loading ? 'Adding Course...' : 'Add Course'}
                                                 </Button>
                                             </Form>
                                         </Card.Body>
