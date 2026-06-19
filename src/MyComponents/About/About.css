@@ -1,17 +1,15 @@
-/* ===========================
+/* =========================
    ABOUT SECTION
-=========================== */
+========================= */
 
 .about-section {
     padding: 120px 0;
     background: #ffffff;
-    position: relative;
-    overflow: hidden;
 }
 
-/* ===========================
-   IMAGE SECTION
-=========================== */
+/* =========================
+   IMAGE SIDE
+========================= */
 
 .about-image-wrapper {
     position: relative;
@@ -35,9 +33,9 @@
     transform: scale(1.03);
 }
 
-/* ===========================
+/* =========================
    VIDEO BUTTON
-=========================== */
+========================= */
 
 .video-btn {
     position: absolute;
@@ -53,11 +51,12 @@
     border-radius: 50%;
 
     background: #ffffff;
-    cursor: pointer;
 
     display: flex;
     align-items: center;
     justify-content: center;
+
+    cursor: pointer;
 
     box-shadow:
         0 15px 40px rgba(0, 0, 0, 0.25);
@@ -70,17 +69,17 @@
 }
 
 .play-icon {
-    width: 50px;
-    height: 50px;
+    width: 55px;
+    height: 55px;
     object-fit: contain;
 }
 
-/* ===========================
-   CONTENT SECTION
-=========================== */
+/* =========================
+   CONTENT SIDE
+========================= */
 
 .about-content {
-    padding-left: 20px;
+    padding-left: 15px;
 }
 
 .section-tag {
@@ -98,14 +97,15 @@
 }
 
 .about-title {
-    font-size: clamp(2rem, 4vw, 3.3rem);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+
     font-weight: 700;
 
     color: #0f172a;
 
     line-height: 1.2;
 
-    margin-bottom: 24px;
+    margin-bottom: 25px;
 }
 
 .about-description {
@@ -117,9 +117,9 @@
     margin-bottom: 35px;
 }
 
-/* ===========================
-   FEATURES GRID
-=========================== */
+/* =========================
+   FEATURES
+========================= */
 
 .about-features {
     display: grid;
@@ -138,9 +138,8 @@
 
     border-radius: 14px;
 
-    padding: 18px 20px;
+    padding: 18px;
 
-    font-size: 0.95rem;
     font-weight: 600;
 
     color: #334155;
@@ -157,9 +156,9 @@
         0 15px 40px rgba(0, 0, 0, 0.08);
 }
 
-/* ===========================
+/* =========================
    BUTTON
-=========================== */
+========================= */
 
 .about-btn {
     display: inline-flex;
@@ -183,22 +182,22 @@
 }
 
 .about-btn:hover {
-    transform: translateY(-3px);
-
     color: #111827;
+
+    transform: translateY(-3px);
 
     box-shadow:
         0 15px 35px rgba(212, 175, 55, 0.35);
 }
 
-/* ===========================
+/* =========================
    RESPONSIVE
-=========================== */
+========================= */
 
 @media (max-width: 991px) {
 
     .about-section {
-        padding: 80px 0;
+        padding: 90px 0;
     }
 
     .about-content {
@@ -221,17 +220,14 @@
         font-size: 2rem;
     }
 
-    .about-description {
-        font-size: 1rem;
-    }
-
     .video-btn {
         width: 75px;
         height: 75px;
     }
 
     .play-icon {
-        width: 40px;
+        width: 45px;
+        height: 45px;
     }
 }
 
@@ -243,10 +239,6 @@
 
     .about-title {
         font-size: 1.8rem;
-    }
-
-    .feature-card {
-        padding: 16px;
     }
 
     .about-btn {
