@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, Card, InputGroup, Alert } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
@@ -10,16 +9,21 @@ const AdminLogin = () => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { login } = useAuth();
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        if (email === 'Admin123@gamil.com' && password === 'Ad12') {
-            login();
+        setError('');
+        setLoading(true);
+        try {
+            await login(email, password);
             navigate('/dashboard');
-        } else {
+        } catch (err) {
             setError('Invalid email or password. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -49,7 +53,6 @@ const AdminLogin = () => {
                                         required
                                     />
                                 </Form.Group>
-
                                 <Form.Group className="mb-3" controlId="adminFormPassword">
                                     <Form.Label>Password</Form.Label>
                                     <InputGroup>
@@ -69,11 +72,14 @@ const AdminLogin = () => {
                                         </Button>
                                     </InputGroup>
                                 </Form.Group>
-
-                                <Button variant="primary" type="submit" className="w-100 mb-3">
-                                    Login
+                                <Button
+                                    variant="primary"
+                                    type="submit"
+                                    className="w-100 mb-3"
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Logging in...' : 'Login'}
                                 </Button>
-
                                 <div className="d-flex justify-content-between">
                                     <Link to="/">Go Back to Home</Link>
                                 </div>
