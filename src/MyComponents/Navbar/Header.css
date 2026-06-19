@@ -9,6 +9,7 @@
   background: #ffffff;
   border-bottom: 1px solid #E5E7EB;
   font-family: 'Inter', sans-serif;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 .nav-inner {
@@ -19,13 +20,14 @@
   height: 68px;
   max-width: 1280px;
   margin: 0 auto;
+  width: 100%;
 }
 
-/* Logo */
 .logo {
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  text-decoration: none;
 }
 
 .logo img {
@@ -34,7 +36,6 @@
   display: block;
 }
 
-/* Nav Links — centered */
 .nav-links {
   display: flex;
   align-items: center;
@@ -65,35 +66,38 @@
   font-weight: 600;
 }
 
-/* Right side */
 .nav-right {
   display: flex;
   align-items: center;
   flex-shrink: 0;
 }
 
-/* CTA Button */
+/* CTA Button — solid green, NOT a link */
 .cta-btn {
-  background: #1B4332;
+  display: inline-block;
+  background: #1B4332 !important;
   color: #ffffff !important;
   font-size: 14px;
   font-weight: 600;
   padding: 10px 22px;
   border-radius: 8px;
-  text-decoration: none;
+  text-decoration: none !important;
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
   transition: background 0.15s, transform 0.1s;
   white-space: nowrap;
-  font-family: 'Inter', sans-serif;
+  line-height: 1.4;
 }
 
 .cta-btn:hover {
   background: #14532D !important;
   color: #ffffff !important;
   transform: translateY(-1px);
+  text-decoration: none !important;
 }
 
-.cta-btn.active {
-  background: #1B4332 !important;
+.cta-btn:visited {
   color: #ffffff !important;
 }
 
@@ -147,7 +151,6 @@
   text-align: center;
 }
 
-/* Mobile */
 @media (max-width: 768px) {
   .nav-links { display: none; }
   .nav-right { display: none; }
