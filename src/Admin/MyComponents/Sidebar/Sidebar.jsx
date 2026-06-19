@@ -1,10 +1,19 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartLine, faUsers, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { NavLink } from 'react-router-dom';
+import { faChartLine, faUsers, faPlus, faEnvelope, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../Pages/AuthContext';
 import './Sidebar.css';
 
 const AdminSidebar = ({ showSidebar, toggleSidebar }) => {
+    const { logout } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        await logout();
+        navigate('/login');
+    };
+
     return (
         <nav id="sidebar" className={`bg-light vh-100 position-fixed d-flex flex-column justify-content-between p-3 ${showSidebar ? 'show' : ''}`}>
             <div>
@@ -36,7 +45,24 @@ const AdminSidebar = ({ showSidebar, toggleSidebar }) => {
                             <span>Add Courses</span>
                         </NavLink>
                     </li>
+                    <li className="mb-3 p-2 rounded">
+                        <NavLink to="/contact-submissions" className="nav-link text-dark d-flex align-items-center" onClick={toggleSidebar}>
+                            <FontAwesomeIcon icon={faEnvelope} className="me-2" />
+                            <span>Contact Messages</span>
+                        </NavLink>
+                    </li>
                 </ul>
+            </div>
+
+            {/* Logout Button at bottom */}
+            <div className="p-2">
+                <button
+                    onClick={handleLogout}
+                    className="btn btn-danger w-100 d-flex align-items-center justify-content-center gap-2"
+                >
+                    <FontAwesomeIcon icon={faSignOutAlt} />
+                    <span>Logout</span>
+                </button>
             </div>
         </nav>
     );
