@@ -1,13 +1,14 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import heroImage from '../../assetes/Hero.jpg';
 import './Hero.css';
 
 const Hero = () => {
   return (
     <section className="hero">
-      <div className="hero-pat-tr"></div>
-      <div className="hero-pat-bl"></div>
-      <div className="hero-inner">
+
+      <div className="hero-text-side">
+        <div className="hero-pat"></div>
 
         <div className="hero-eyebrow">Online Quran Academy — UK & USA</div>
 
@@ -96,8 +97,17 @@ const Hero = () => {
             </div>
           </div>
         </div>
-
       </div>
+
+      <div
+        className="hero-image-side"
+        role="img"
+        aria-label="A young student reading the Holy Quran during class"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      >
+        <div className="hero-image-fade"></div>
+      </div>
+
     </section>
   );
 };
