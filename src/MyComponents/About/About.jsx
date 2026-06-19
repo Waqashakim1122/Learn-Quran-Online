@@ -1,37 +1,49 @@
-import React from 'react'
-import './About.css'
-import Aboutimg from '../../assetes/about-img.jpg'
-import Aboutplybuton from '../../assetes/Play-Button.gif'
+<div className="about-content">
 
-const About = ({setPlaystate}) => {
-    return (
-        <div className='container'>
-            <div className='row'>
-                <div className='col-md-6 mb-4'>
-                    <div className='about-left position-relative'>
-                        <img src={Aboutimg} alt="About Us" className='img-fluid about-img' />
-                       <button type='btn' onClick={()=>{setPlaystate(true)}}> <img src={Aboutplybuton} alt="Play Button" className='play-icon'  /></button>
-                    </div>
-                </div>
-                <div className='col-md-6'>
-                    <div className='about-right'>
-                        <h2>About Us</h2>
-                        <p>Welcome to Learn Quran Online, your go-to platform for accessible and comprehensive Quranic education. Our mission is to make learning the Quran easy and enjoyable for everyone, no matter where you are or your level of experience.</p>
-                        <h2>Our Vision</h2>
-                        <p>We aim to connect people worldwide with the teachings of the Quran, creating a community of learners who grow in their understanding and spirituality.</p>
-                        <h2>Why Choose Us?</h2>
-                        <ul>
-                            <li>Qualified Instructors: Learn from experienced scholars.</li>
-                            <li>Interactive Learning: Use quizzes, forums, and live tutoring to enhance your experience.</li>
-                            <li>Personalized Paths: Study at your own pace with customized learning plans.</li>
-                            <li>Global Access: Study from anywhere in the world.</li>
-                            <li>Progress Tracking: Monitor your learning and set goals.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+    <span className="section-tag">
+        ABOUT OUR ACADEMY
+    </span>
+
+    <h2>
+        Learn the Quran with Expert Teachers from Anywhere in the World
+    </h2>
+
+    <p className="lead">
+        Learn Quran Online is dedicated to providing authentic Quranic
+        education through qualified tutors, personalized learning plans,
+        and interactive online classes designed for students of all ages.
+    </p>
+
+    <div className="about-features">
+
+        <div className="feature-item">
+            ✓ Certified Quran Teachers
         </div>
-    )
-}
 
-export default About
+        <div className="feature-item">
+            ✓ One-on-One Live Classes
+        </div>
+
+        <div className="feature-item">
+            ✓ Flexible Scheduling
+        </div>
+
+        <div className="feature-item">
+            ✓ Worldwide Access
+        </div>
+
+        <div className="feature-item">
+            ✓ Progress Tracking
+        </div>
+
+        <div className="feature-item">
+            ✓ Male & Female Tutors
+        </div>
+
+    </div>
+
+    <a href="/contact" className="about-btn">
+        Start Free Trial
+    </a>
+
+</div>
