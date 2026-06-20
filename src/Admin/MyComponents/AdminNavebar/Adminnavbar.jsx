@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Pages/AuthContext';
+import Logo from '../../../assetes/navbar-logo.png';
 import './Adminnavbar.css';
 
-const AdminNavbar = ({ section = 'Overview', title = 'Dashboard' }) => {
+const AdminNavbar = ({ section = 'Admin', title = 'Dashboard' }) => {
   const navigate = useNavigate();
   const { logout, userEmail } = useAuth();
   const [open, setOpen] = useState(false);
@@ -33,23 +34,16 @@ const AdminNavbar = ({ section = 'Overview', title = 'Dashboard' }) => {
     <nav className="admin-navbar">
       <div className="admin-navbar-left">
         <Link className="admin-navbar-brand" to="/">
-          <div className="admin-navbar-logo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-            </svg>
-          </div>
-          <div className="admin-navbar-brand-text">
-            <strong>Learn Quran Online</strong>
-            <span>Admin Panel</span>
-          </div>
+          <img src={Logo} alt="Learn Quran Online" />
+          <span className="admin-navbar-badge">Admin</span>
         </Link>
 
-        <div className="admin-navbar-divider admin-navbar-divider-desktop"></div>
+        <div className="admin-navbar-divider"></div>
 
-        <div className="admin-page-title-block">
-          <span className="crumb">{section}</span>
-          <span className="title">{title}</span>
+        <div className="admin-breadcrumb">
+          <span className="admin-breadcrumb-root">{section}</span>
+          <span className="admin-breadcrumb-sep">/</span>
+          <span className="admin-breadcrumb-current">{title}</span>
         </div>
       </div>
 
