@@ -119,7 +119,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 56px;
-  align-items: center;
+  align-items: stretch;
 }
 
 .about-row-reverse .about-row-text {
@@ -193,8 +193,8 @@
 
 .about-row-image img {
   width: 100%;
+  height: 100%;
   display: block;
-  aspect-ratio: 4 / 3;
   object-fit: cover;
 }
 
@@ -359,7 +359,7 @@
   position: relative;
   text-align: center;
   padding: 56px 24px;
-  background: #1B4332;
+  background: #234c3a;
   overflow: hidden;
   font-family: 'Inter', sans-serif;
 }
