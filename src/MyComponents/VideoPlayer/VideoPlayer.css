@@ -41,7 +41,7 @@
     aspect-ratio: 16 / 9;
     background: #0B3D2E;
     position: relative;
-    z-index: 2;
+    z-index: 1;
 }
 
 /* Close button — brand gold on hover */
@@ -60,7 +60,7 @@
     background: rgba(255,255,255,.15);
     backdrop-filter: blur(10px);
     transition: all .3s ease;
-    z-index: 2;
+    z-index: 3;
 }
 
 .close-btn:hover {
@@ -69,33 +69,53 @@
     color: #1B4332;
 }
 
-/* Loading spinner */
-.video-loading {
+/* Click-to-play overlay */
+.video-play-overlay {
     position: absolute;
     inset: 0;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 14px;
+    border: none;
     border-radius: 20px;
-    background: #0B3D2E;
-    z-index: 1;
+    background: linear-gradient(rgba(11, 61, 46, 0.55), rgba(11, 61, 46, 0.65));
+    cursor: pointer;
+    padding: 0;
 }
 
-.video-spinner {
-    width: 34px;
-    height: 34px;
-    border: 2.5px solid rgba(201, 162, 39, 0.25);
-    border-top-color: #C9A227;
+.video-play-icon {
+    width: 78px;
+    height: 78px;
     border-radius: 50%;
-    animation: video-spin 0.8s linear infinite;
+    background: #C9A227;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+    transition: transform 0.2s ease, background 0.2s ease;
 }
 
-.video-loading span {
-    color: rgba(255, 255, 255, 0.55);
-    font-size: 12px;
+.video-play-overlay:hover .video-play-icon {
+    transform: scale(1.08);
+    background: #DEB840;
+}
+
+.video-play-icon svg {
+    width: 30px;
+    height: 30px;
+    color: #1B4332;
+    margin-left: 4px;
+}
+
+.video-play-label {
     font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #FAF6EE;
+    letter-spacing: 0.02em;
 }
 
 @keyframes video-spin {
@@ -112,5 +132,13 @@
         top: -15px;
         right: -10px;
         font-size: 1.6rem;
+    }
+    .video-play-icon {
+        width: 62px;
+        height: 62px;
+    }
+    .video-play-icon svg {
+        width: 24px;
+        height: 24px;
     }
 }
