@@ -7,7 +7,7 @@
   overflow: hidden;
   font-family: 'Inter', sans-serif;
   background-size: cover;
-  background-position: right center;
+  background-position: 78% center;
   background-repeat: no-repeat;
 }
 
@@ -17,24 +17,24 @@
   background: linear-gradient(
     270deg,
     rgba(11,38,28,0.05) 0%,
-    rgba(11,38,28,0.10) 38%,
-    rgba(11,38,28,0.18) 58%,
+    rgba(11,38,28,0.10) 30%,
+    rgba(11,38,28,0.16) 50%,
     rgba(11,38,28,0.22) 100%
   );
 }
 
-/* Frosted glass panel behind the text content */
+/* Frosted glass panel behind the text content — wide, gradual fade into the clear photo */
 .hero-glass-panel {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
-  width: 56%;
+  width: 64%;
   background: rgba(11, 38, 28, 0.42);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 78%, transparent 100%);
-  mask-image: linear-gradient(90deg, #000 0%, #000 78%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 50%, transparent 100%);
+  mask-image: linear-gradient(90deg, #000 0%, #000 50%, transparent 100%);
 }
 
 .hero-inner {
