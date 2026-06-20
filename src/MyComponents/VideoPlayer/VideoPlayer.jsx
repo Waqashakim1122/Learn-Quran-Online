@@ -1,24 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import "./VideoPlayer.css";
 import Video from "../../assetes/video.mp4";
 
 const VideoPlayer = ({ playstate, setPlaystate }) => {
   const overlayRef = useRef(null);
   const videoRef = useRef(null);
-  const [hasStarted, setHasStarted] = useState(false);
 
   const closePlayer = (e) => {
     if (e.target === overlayRef.current) {
       setPlaystate(false);
     }
-  };
-
-  const startPlayback = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    setHasStarted(true);
-    video.muted = false;
-    video.play();
   };
 
   useEffect(() => {
@@ -31,11 +22,9 @@ const VideoPlayer = ({ playstate, setPlaystate }) => {
     if (playstate) {
       document.body.style.overflow = "hidden";
       document.addEventListener("keydown", handleEsc);
-      setHasStarted(false);
       if (videoRef.current) {
         videoRef.current.pause();
         videoRef.current.currentTime = 0;
-        videoRef.current.muted = true;
       }
     } else {
       if (videoRef.current) {
@@ -59,34 +48,20 @@ const VideoPlayer = ({ playstate, setPlaystate }) => {
         <button
           className="close-btn"
           onClick={() => setPlaystate(false)}
-          aria-label="Close Video"
+          aria-label="Close video"
         >
-          ×
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
         </button>
-
-        {!hasStarted && (
-          <button
-            className="video-play-overlay"
-            onClick={startPlayback}
-            aria-label="Play Video"
-          >
-            <span className="video-play-icon">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </span>
-            <span className="video-play-label">Watch Video</span>
-          </button>
-        )}
 
         <video
           ref={videoRef}
           src={Video}
-          controls={hasStarted}
+          controls
           playsInline
           preload="metadata"
-          muted
-          style={{ opacity: hasStarted ? 1 : 0.001 }}
         />
       </div>
     </div>
