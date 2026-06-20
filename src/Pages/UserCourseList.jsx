@@ -1,266 +1,377 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Alert, Form, Modal, Badge } from 'react-bootstrap';
 import Header from '../MyComponents/Navbar/Header';
 import Footer from '../MyComponents/Footer/Footer';
 import supabase from '../lib/supabaseClient';
+import './UserCourseList.css';
+
+const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1609599006353-e629aaabfeae?w=600&q=80';
+
+const LEVEL_STYLES = {
+  Beginner: { bg: '#E8F3DC', color: '#27500A' },
+  Intermediate: { bg: '#FAEEDA', color: '#854F0B' },
+  Advanced: { bg: '#FCEBEB', color: '#791F1F' },
+  'All Levels': { bg: '#E6F1FB', color: '#185FA5' },
+};
 
 const UserCourseList = () => {
-    const [courses, setCourses] = useState([]);
-    const [message, setMessage] = useState('');
-    const [messageType, setMessageType] = useState('danger');
-    const [showModal, setShowModal] = useState(false);
-    const [selectedCourse, setSelectedCourse] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [submitting, setSubmitting] = useState(false);
-    const [enrollmentDetails, setEnrollmentDetails] = useState({
-        name: '',
-        email: '',
-        age: '',
-        gender: '',
-        phoneNumber: '',
-        city: ''
-    });
+  const [courses, setCourses] = useState([]);
+  const [loadState, setLoadState] = useState('loading'); // loading | success | error
+  const [showModal, setShowModal] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [submitState, setSubmitState] = useState('idle'); // idle | submitting | success | error
+  const [formError, setFormError] = useState('');
+  const [enrollmentDetails, setEnrollmentDetails] = useState({
+    name: '',
+    email: '',
+    age: '',
+    gender: '',
+    phoneNumber: '',
+    city: '',
+  });
 
-    useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                const { data, error } = await supabase
-                    .from('courses')
-                    .select('*')
-                    .order('created_at', { ascending: true });
-                if (error) throw error;
-                setCourses(data.map(course => ({ ...course, expanded: false })));
-            } catch (error) {
-                setMessage('Failed to fetch courses. Please try again.');
-                setMessageType('danger');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchCourses();
-    }, []);
+  useEffect(() => {
+    document.title = 'Courses — Learn Quran Online | Online Quran Academy';
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute(
+        'content',
+        'Browse our online Quran courses: Nazra, Hifz, Tajweed and Translation. One-on-one classes for men, women and kids, taught by certified teachers.'
+      );
+    }
+  }, []);
 
-    const handleEnrollClick = (course) => {
-        setSelectedCourse(course);
-        setShowModal(true);
-        setMessage('');
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('courses')
+          .select('*')
+          .order('created_at', { ascending: true });
+        if (error) throw error;
+        setCourses(data || []);
+        setLoadState('success');
+      } catch (error) {
+        setLoadState('error');
+      }
     };
+    fetchCourses();
+  }, []);
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setEnrollmentDetails({ ...enrollmentDetails, [name]: value });
-    };
+  const handleEnrollClick = (course) => {
+    setSelectedCourse(course);
+    setShowModal(true);
+    setSubmitState('idle');
+    setFormError('');
+  };
 
-    const handleEnrollmentSubmit = async (e) => {
-        e.preventDefault();
-        setSubmitting(true);
-        try {
-            const { error } = await supabase
-                .from('enrollments')
-                .insert([{
-                    student_name: enrollmentDetails.name,
-                    email: enrollmentDetails.email,
-                    phone: enrollmentDetails.phoneNumber,
-                    course_id: selectedCourse.id,
-                    course_name: selectedCourse.title
-                }]);
-            if (error) throw error;
-            setMessage('Enrollment submitted successfully! We will contact you soon.');
-            setMessageType('success');
-            setEnrollmentDetails({
-                name: '',
-                email: '',
-                age: '',
-                gender: '',
-                phoneNumber: '',
-                city: ''
-            });
-            setShowModal(false);
-        } catch (error) {
-            setMessage('Failed to submit enrollment. Please try again.');
-            setMessageType('danger');
-        } finally {
-            setSubmitting(false);
-        }
-    };
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedCourse(null);
+  };
 
-    const toggleDescription = (courseId) => {
-        setCourses(courses.map(course =>
-            course.id === courseId ? { ...course, expanded: !course.expanded } : course
-        ));
-    };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEnrollmentDetails((prev) => ({ ...prev, [name]: value }));
+  };
 
-    const getLevelBadge = (level) => {
-        const colors = {
-            'Beginner': 'success',
-            'Intermediate': 'warning',
-            'Advanced': 'danger',
-            'All Levels': 'info'
-        };
-        return colors[level] || 'secondary';
-    };
+  const handleEnrollmentSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitState('submitting');
+    setFormError('');
+    try {
+      const { error } = await supabase.from('enrollments').insert([
+        {
+          student_name: enrollmentDetails.name,
+          email: enrollmentDetails.email,
+          phone: enrollmentDetails.phoneNumber,
+          course_id: selectedCourse.id,
+          course_name: selectedCourse.title,
+        },
+      ]);
+      if (error) throw error;
+      setSubmitState('success');
+      setEnrollmentDetails({ name: '', email: '', age: '', gender: '', phoneNumber: '', city: '' });
+    } catch (error) {
+      setSubmitState('error');
+      setFormError('We could not submit your enrollment. Please check your connection and try again.');
+    }
+  };
 
-    return (
-        <>
-            <Header />
-            <Container className="mt-5 mb-5">
-                <Row>
-                    <Col>
-                        <h3 className="text-center mb-4">Our Courses</h3>
-                        {message && (
-                            <Alert variant={messageType} onClose={() => setMessage('')} dismissible>
-                                {message}
-                            </Alert>
-                        )}
-                        {loading ? (
-                            <p className="text-center">Loading courses...</p>
-                        ) : (
-                            <Row>
-                                {courses.map((course) => (
-                                    <Col md={4} key={course.id} className="mb-4">
-                                        <Card className="h-100 shadow-sm">
-                                            <Card.Img
-                                                variant="top"
-                                                src={course.image_url}
-                                                style={{ height: '200px', objectFit: 'cover' }}
-                                                onError={(e) => { e.target.src = 'https://via.placeholder.com/400x200?text=Quran+Course'; }}
-                                            />
-                                            <Card.Body className="d-flex flex-column">
-                                                <Card.Title>{course.title}</Card.Title>
-                                                <div className="mb-2">
-                                                    {course.level && (
-                                                        <Badge bg={getLevelBadge(course.level)} className="me-2">
-                                                            {course.level}
-                                                        </Badge>
-                                                    )}
-                                                    {course.duration && (
-                                                        <Badge bg="secondary">{course.duration}</Badge>
-                                                    )}
-                                                </div>
-                                                <Card.Text>
-                                                    {course.expanded
-                                                        ? course.description
-                                                        : `${course.description?.slice(0, 100)}...`}
-                                                    {' '}
-                                                    <Button
-                                                        variant="link"
-                                                        className="p-0"
-                                                        onClick={() => toggleDescription(course.id)}
-                                                    >
-                                                        {course.expanded ? 'Read Less' : 'Read More'}
-                                                    </Button>
-                                                </Card.Text>
-                                                {course.price && (
-                                                    <p className="fw-bold text-primary">{course.price}</p>
-                                                )}
-                                                <Button
-                                                    variant="primary"
-                                                    className="mt-auto"
-                                                    onClick={() => handleEnrollClick(course)}
-                                                >
-                                                    Enroll Now
-                                                </Button>
-                                            </Card.Body>
-                                        </Card>
-                                    </Col>
-                                ))}
-                            </Row>
-                        )}
-                    </Col>
-                </Row>
-            </Container>
+  return (
+    <>
+      <Header />
 
-            {/* Enrollment Modal */}
-            <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Enroll in {selectedCourse?.title}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={handleEnrollmentSubmit}>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Full Name</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Enter your full name"
-                                name="name"
-                                value={enrollmentDetails.name}
-                                onChange={handleInputChange}
-                                required
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Email Address</Form.Label>
-                            <Form.Control
-                                type="email"
-                                placeholder="Enter your email"
-                                name="email"
-                                value={enrollmentDetails.email}
-                                onChange={handleInputChange}
-                                required
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Age</Form.Label>
-                            <Form.Control
-                                type="number"
-                                placeholder="Enter your age"
-                                name="age"
-                                value={enrollmentDetails.age}
-                                onChange={handleInputChange}
-                                required
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Gender</Form.Label>
-                            <Form.Select
-                                name="gender"
-                                value={enrollmentDetails.gender}
-                                onChange={handleInputChange}
-                                required
-                            >
-                                <option value="">Select Gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Other</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Phone Number</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Enter your phone number"
-                                name="phoneNumber"
-                                value={enrollmentDetails.phoneNumber}
-                                onChange={handleInputChange}
-                                required
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>City</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Enter your city"
-                                name="city"
-                                value={enrollmentDetails.city}
-                                onChange={handleInputChange}
-                                required
-                            />
-                        </Form.Group>
-                        <Button
-                            variant="primary"
-                            type="submit"
-                            className="w-100"
-                            disabled={submitting}
-                        >
-                            {submitting ? 'Submitting...' : 'Submit Enrollment'}
-                        </Button>
-                    </Form>
-                </Modal.Body>
-            </Modal>
+      <section className="courses-page" aria-labelledby="courses-heading">
+        <div className="courses-pattern" aria-hidden="true"></div>
 
-            <Footer />
-        </>
-    );
+        <div className="courses-intro">
+          <div className="courses-eyebrow">
+            <span className="courses-eyebrow-line"></span>
+            Our courses
+            <span className="courses-eyebrow-line"></span>
+          </div>
+          <h1 id="courses-heading" className="courses-title">
+            A structured path for every learner
+          </h1>
+          <p className="courses-subtitle">
+            Each course is taught one-on-one by a certified teacher, with the same instructor every session.
+          </p>
+        </div>
+
+        {loadState === 'loading' && (
+          <div className="courses-grid" aria-busy="true" aria-live="polite">
+            {[1, 2, 3].map((i) => (
+              <div className="course-card course-card-skeleton" key={i} aria-hidden="true">
+                <div className="skeleton-image"></div>
+                <div className="skeleton-body">
+                  <div className="skeleton-line skeleton-line-short"></div>
+                  <div className="skeleton-line"></div>
+                  <div className="skeleton-line skeleton-line-medium"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {loadState === 'error' && (
+          <div className="courses-status courses-status-error" role="alert">
+            <p>We could not load our courses right now. Please refresh the page or try again shortly.</p>
+          </div>
+        )}
+
+        {loadState === 'success' && courses.length === 0 && (
+          <div className="courses-status">
+            <p>New courses are being added soon. Please check back, or contact us to ask about availability.</p>
+          </div>
+        )}
+
+        {loadState === 'success' && courses.length > 0 && (
+          <div className="courses-grid">
+            {courses.map((course, index) => {
+              const levelStyle = LEVEL_STYLES[course.level] || LEVEL_STYLES['All Levels'];
+              return (
+                <article className="course-card" key={course.id}>
+                  {index === 1 && courses.length > 1 && (
+                    <span className="course-ribbon">Most popular</span>
+                  )}
+                  <div className="course-image-wrap">
+                    <img
+                      src={course.image_url || FALLBACK_IMAGE}
+                      alt={`Students learning in the ${course.title} course`}
+                      className="course-image"
+                      loading="lazy"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = FALLBACK_IMAGE;
+                      }}
+                    />
+                    <div className="course-image-overlay"></div>
+                    {course.level && (
+                      <span
+                        className="course-level-badge"
+                        style={{ background: '#fff', color: levelStyle.color }}
+                      >
+                        {course.level}
+                      </span>
+                    )}
+                    <h2 className="course-card-title">{course.title}</h2>
+                  </div>
+
+                  <div className="course-card-body">
+                    <p className="course-description">{course.description}</p>
+
+                    <div className="course-meta">
+                      {course.duration && (
+                        <span className="course-meta-item">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9" />
+                            <path d="M12 7v5l3 3" />
+                          </svg>
+                          {course.duration}
+                        </span>
+                      )}
+                      <span className="course-meta-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                          <circle cx="9" cy="7" r="4" />
+                        </svg>
+                        1-on-1
+                      </span>
+                    </div>
+
+                    <div className="course-footer">
+                      {course.price && (
+                        <span className="course-price">
+                          {course.price.replace(/\/.*$/, '')}
+                          <span className="course-price-unit">/mo</span>
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        className="course-enroll-btn"
+                        onClick={() => handleEnrollClick(course)}
+                      >
+                        Enroll
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {showModal && (
+        <div
+          className="enroll-modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="enroll-modal-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeModal();
+          }}
+        >
+          <div className="enroll-modal">
+            <button
+              type="button"
+              className="enroll-modal-close"
+              onClick={closeModal}
+              aria-label="Close enrollment form"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </button>
+
+            {submitState === 'success' ? (
+              <div className="enroll-success">
+                <div className="enroll-success-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                </div>
+                <h2>Enrollment submitted</h2>
+                <p>Thank you. We will contact you soon to confirm your schedule for {selectedCourse?.title}.</p>
+                <button type="button" className="enroll-success-btn" onClick={closeModal}>
+                  Close
+                </button>
+              </div>
+            ) : (
+              <>
+                <h2 id="enroll-modal-title" className="enroll-modal-title">
+                  Enroll in {selectedCourse?.title}
+                </h2>
+                <p className="enroll-modal-subtitle">
+                  Fill in your details and we will reach out to confirm your first class.
+                </p>
+
+                <form onSubmit={handleEnrollmentSubmit} className="enroll-form" noValidate>
+                  <div className="enroll-field">
+                    <label htmlFor="enroll-name">Full name</label>
+                    <input
+                      id="enroll-name"
+                      type="text"
+                      name="name"
+                      value={enrollmentDetails.name}
+                      onChange={handleInputChange}
+                      placeholder="Enter your full name"
+                      required
+                    />
+                  </div>
+
+                  <div className="enroll-field">
+                    <label htmlFor="enroll-email">Email address</label>
+                    <input
+                      id="enroll-email"
+                      type="email"
+                      name="email"
+                      value={enrollmentDetails.email}
+                      onChange={handleInputChange}
+                      placeholder="Enter your email"
+                      required
+                    />
+                  </div>
+
+                  <div className="enroll-field-row">
+                    <div className="enroll-field">
+                      <label htmlFor="enroll-age">Age</label>
+                      <input
+                        id="enroll-age"
+                        type="number"
+                        name="age"
+                        min="3"
+                        max="100"
+                        value={enrollmentDetails.age}
+                        onChange={handleInputChange}
+                        placeholder="Age"
+                        required
+                      />
+                    </div>
+                    <div className="enroll-field">
+                      <label htmlFor="enroll-gender">Gender</label>
+                      <select
+                        id="enroll-gender"
+                        name="gender"
+                        value={enrollmentDetails.gender}
+                        onChange={handleInputChange}
+                        required
+                      >
+                        <option value="">Select</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="enroll-field">
+                    <label htmlFor="enroll-phone">Phone number</label>
+                    <input
+                      id="enroll-phone"
+                      type="tel"
+                      name="phoneNumber"
+                      value={enrollmentDetails.phoneNumber}
+                      onChange={handleInputChange}
+                      placeholder="Enter your phone number"
+                      required
+                    />
+                  </div>
+
+                  <div className="enroll-field">
+                    <label htmlFor="enroll-city">City</label>
+                    <input
+                      id="enroll-city"
+                      type="text"
+                      name="city"
+                      value={enrollmentDetails.city}
+                      onChange={handleInputChange}
+                      placeholder="Enter your city"
+                      required
+                    />
+                  </div>
+
+                  {formError && (
+                    <p className="enroll-form-error" role="alert">{formError}</p>
+                  )}
+
+                  <button type="submit" className="enroll-submit-btn" disabled={submitState === 'submitting'}>
+                    {submitState === 'submitting' ? 'Submitting...' : 'Submit enrollment'}
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      <Footer />
+    </>
+  );
 };
 
 export default UserCourseList;
