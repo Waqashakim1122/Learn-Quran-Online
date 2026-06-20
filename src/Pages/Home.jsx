@@ -15,7 +15,7 @@ function App() {
       <Hero />
       <div className='container'>
         <Program />
-        <Title subtitle='About Us' tittle='Who We Are' />
+      
         <About setPlaystate={setPlaystate} />
         <VideoPlayer playstate={playstate} setPlaystate={setPlaystate} />
       </div>
