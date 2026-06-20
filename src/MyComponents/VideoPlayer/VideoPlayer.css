@@ -40,6 +40,8 @@
     transition: opacity 0.3s ease;
     aspect-ratio: 16 / 9;
     background: #0B3D2E;
+    position: relative;
+    z-index: 2;
 }
 
 /* Close button — brand gold on hover */
