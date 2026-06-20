@@ -1,7 +1,6 @@
 import Header from '../MyComponents/Navbar/Header'
 import Hero from '../MyComponents/Heros/Hero'
 import Program from '../MyComponents/Programs/Program';
-import Title from '../MyComponents/Title/Title';
 import About from '../MyComponents/About/About';
 import Footer from '../MyComponents/Footer/Footer';
 import VideoPlayer from '../MyComponents/VideoPlayer/VideoPlayer';
