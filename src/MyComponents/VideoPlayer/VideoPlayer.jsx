@@ -5,7 +5,7 @@ import Video from "../../assetes/video.mp4";
 const VideoPlayer = ({ playstate, setPlaystate }) => {
   const overlayRef = useRef(null);
   const videoRef = useRef(null);
-  const [loading, setLoading] = useState(true);
+  const [hasStarted, setHasStarted] = useState(false);
 
   const closePlayer = (e) => {
     if (e.target === overlayRef.current) {
@@ -13,7 +13,13 @@ const VideoPlayer = ({ playstate, setPlaystate }) => {
     }
   };
 
-  const hideLoading = () => setLoading(false);
+  const startPlayback = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    setHasStarted(true);
+    video.muted = false;
+    video.play();
+  };
 
   useEffect(() => {
     const handleEsc = (e) => {
@@ -25,24 +31,16 @@ const VideoPlayer = ({ playstate, setPlaystate }) => {
     if (playstate) {
       document.body.style.overflow = "hidden";
       document.addEventListener("keydown", handleEsc);
-      setLoading(true);
-
-      const video = videoRef.current;
-      const checkPlaying = setInterval(() => {
-        if (video && !video.paused && video.currentTime > 0) {
-          hideLoading();
-          clearInterval(checkPlaying);
-        }
-      }, 200);
-
-      const fallbackTimer = setTimeout(hideLoading, 4000);
-
-      return () => {
-        document.body.style.overflow = "auto";
-        document.removeEventListener("keydown", handleEsc);
-        clearInterval(checkPlaying);
-        clearTimeout(fallbackTimer);
-      };
+      setHasStarted(false);
+      if (videoRef.current) {
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
+        videoRef.current.muted = true;
+      }
+    } else {
+      if (videoRef.current) {
+        videoRef.current.pause();
+      }
     }
 
     return () => {
@@ -66,26 +64,29 @@ const VideoPlayer = ({ playstate, setPlaystate }) => {
           ×
         </button>
 
-        {loading && (
-          <div className="video-loading">
-            <div className="video-spinner"></div>
-            <span>Loading video...</span>
-          </div>
+        {!hasStarted && (
+          <button
+            className="video-play-overlay"
+            onClick={startPlayback}
+            aria-label="Play Video"
+          >
+            <span className="video-play-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </span>
+            <span className="video-play-label">Watch Video</span>
+          </button>
         )}
 
         <video
           ref={videoRef}
           src={Video}
-          controls
-          autoPlay
+          controls={hasStarted}
           playsInline
-          preload="auto"
-          onCanPlay={hideLoading}
-          onCanPlayThrough={hideLoading}
-          onLoadedData={hideLoading}
-          onPlaying={hideLoading}
-          onTimeUpdate={hideLoading}
-          style={{ opacity: loading ? 0 : 1, position: "relative", zIndex: 2 }}
+          preload="metadata"
+          muted
+          style={{ opacity: hasStarted ? 1 : 0.001 }}
         />
       </div>
     </div>
