@@ -11,13 +11,64 @@ import './AboutUS.css';
 const AboutUS = () => {
   useEffect(() => {
     document.title = 'About Us — Learn Quran Online | Online Quran Academy';
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute(
-        'content',
-        'Learn about Learn Quran Online — a one-on-one online Quran academy offering Tajweed, Hifz, and Translation courses for men, women and kids, with the same certified teacher every class.'
-      );
+
+    const setMeta = (selector, attr, content) => {
+      let tag = document.querySelector(selector);
+      if (!tag) {
+        tag = document.createElement('meta');
+        const [, attrName, attrVal] = selector.match(/\[(.+?)="(.+?)"\]/);
+        tag.setAttribute(attrName, attrVal);
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute(attr, content);
+    };
+
+    setMeta(
+      'meta[name="description"]',
+      'content',
+      'Learn about Learn Quran Online — a one-on-one online Quran academy offering Tajweed, Hifz, and Translation courses for men, women and kids, with the same certified teacher every class.'
+    );
+    setMeta('meta[property="og:title"]', 'content', 'About Us — Learn Quran Online');
+    setMeta(
+      'meta[property="og:description"]',
+      'content',
+      'A one-on-one online Quran academy offering Tajweed, Hifz, and Translation courses, with the same certified teacher every class.'
+    );
+    setMeta('meta[property="og:type"]', 'content', 'website');
+    setMeta('meta[property="og:url"]', 'content', 'https://learn-quran-online-kappa.vercel.app/About');
+    setMeta('meta[name="twitter:card"]', 'content', 'summary');
+    setMeta('meta[name="twitter:title"]', 'content', 'About Us — Learn Quran Online');
+    setMeta(
+      'meta[name="twitter:description"]',
+      'content',
+      'A one-on-one online Quran academy with certified teachers for men, women and kids.'
+    );
+
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
     }
+    canonical.setAttribute('href', 'https://learn-quran-online-kappa.vercel.app/About');
+
+    let ld = document.getElementById('about-page-ld-json');
+    if (!ld) {
+      ld = document.createElement('script');
+      ld.type = 'application/ld+json';
+      ld.id = 'about-page-ld-json';
+      document.head.appendChild(ld);
+    }
+    ld.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'EducationalOrganization',
+      name: 'Learn Quran Online',
+      description:
+        'A one-on-one online Quran academy offering Tajweed, Hifz, and Translation courses for men, women and kids.',
+      url: 'https://learn-quran-online-kappa.vercel.app/',
+      sameAs: [],
+      areaServed: ['United Kingdom', 'United States', 'Worldwide'],
+    });
   }, []);
 
   return (
@@ -25,8 +76,18 @@ const AboutUS = () => {
       <Header />
 
       <main>
+        {/* Hero band */}
         <section className="about-hero" aria-labelledby="about-hero-heading">
           <div className="about-hero-pattern" aria-hidden="true"></div>
+
+          <nav className="about-breadcrumb" aria-label="Breadcrumb">
+            <Link to="/">Home</Link>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+            <span aria-current="page">About Us</span>
+          </nav>
+
           <div className="about-hero-eyebrow">
             <span className="about-eyebrow-line"></span>
             About us
@@ -41,10 +102,19 @@ const AboutUS = () => {
           </p>
         </section>
 
-        <div className="about-content">
-          <section className="about-row" aria-labelledby="vision-heading">
+        {/* Row 1 — Our Vision (white band) */}
+        <section className="about-band about-band-white" aria-labelledby="vision-heading">
+          <div className="about-row">
             <div className="about-row-text">
-              <span className="about-label">Our vision</span>
+              <div className="about-eyebrow-row">
+                <span className="about-eyebrow-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 7v5l3 3" />
+                  </svg>
+                </span>
+                <span className="about-label">Our vision</span>
+              </div>
               <h2 id="vision-heading" className="about-row-title">
                 Quranic education that fits real life
               </h2>
@@ -53,6 +123,13 @@ const AboutUS = () => {
                 Our goal is simple: connect students with a dedicated teacher, on a schedule
                 that actually works for their family, wherever they live in the world.
               </p>
+              <div className="about-pull-stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M9 12l2 2 4-4" />
+                  <circle cx="12" cy="12" r="10" />
+                </svg>
+                <span>1-on-1 classes, not group calls</span>
+              </div>
             </div>
             <div className="about-row-image">
               <img
@@ -63,11 +140,24 @@ const AboutUS = () => {
                 height="450"
               />
             </div>
-          </section>
+          </div>
+        </section>
 
-          <section className="about-row about-row-reverse" aria-labelledby="courses-heading">
+        <div className="about-divider" aria-hidden="true"></div>
+
+        {/* Row 2 — Our Courses (cream band) */}
+        <section className="about-band about-band-cream" aria-labelledby="courses-heading">
+          <div className="about-row about-row-reverse">
             <div className="about-row-text">
-              <span className="about-label">Our courses</span>
+              <div className="about-eyebrow-row">
+                <span className="about-eyebrow-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                  </svg>
+                </span>
+                <span className="about-label">Our courses</span>
+              </div>
               <h2 id="courses-heading" className="about-row-title">
                 A path for every stage
               </h2>
@@ -75,11 +165,11 @@ const AboutUS = () => {
                 From a child's first letters to advanced memorization, our curriculum is built
                 to grow with the student.
               </p>
-              <ul className="about-list">
-                <li>Quran recitation (Tajweed)</li>
-                <li>Quran memorization (Hifz)</li>
-                <li>Translation and Tafsir</li>
-                <li>Noorani Qaida for beginners</li>
+              <ul className="about-num-list">
+                <li><span className="about-num-badge">1</span> Quran Recitation (Tajweed)</li>
+                <li><span className="about-num-badge">2</span> Quran Memorization (Hifz)</li>
+                <li><span className="about-num-badge">3</span> Translation and Tafsir</li>
+                <li><span className="about-num-badge">4</span> Noorani Qaida for Beginners</li>
               </ul>
               <Link to="/courses" className="about-inline-link">
                 View all courses
@@ -97,11 +187,24 @@ const AboutUS = () => {
                 height="450"
               />
             </div>
-          </section>
+          </div>
+        </section>
 
-          <section className="about-row" aria-labelledby="instructors-heading">
+        <div className="about-divider" aria-hidden="true"></div>
+
+        {/* Row 3 — Our Instructors (white band) */}
+        <section className="about-band about-band-white" aria-labelledby="instructors-heading">
+          <div className="about-row">
             <div className="about-row-text">
-              <span className="about-label">Our instructors</span>
+              <div className="about-eyebrow-row">
+                <span className="about-eyebrow-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                  </svg>
+                </span>
+                <span className="about-label">Our instructors</span>
+              </div>
               <h2 id="instructors-heading" className="about-row-title">
                 Teachers who know how to teach, not just recite
               </h2>
@@ -110,6 +213,13 @@ const AboutUS = () => {
                 their ability to explain it clearly, especially to children. You'll meet your
                 teacher in a free trial class before committing to anything.
               </p>
+              <div className="about-pull-stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M9 12l2 2 4-4" />
+                  <circle cx="12" cy="12" r="10" />
+                </svg>
+                <span>Meet your teacher before you commit</span>
+              </div>
             </div>
             <div className="about-row-image">
               <img
@@ -120,11 +230,16 @@ const AboutUS = () => {
                 height="450"
               />
             </div>
-          </section>
+          </div>
+        </section>
 
-          <section className="about-why" aria-labelledby="why-heading">
+        <div className="about-divider" aria-hidden="true"></div>
+
+        {/* Why Choose Us (cream band) */}
+        <section className="about-band about-band-cream" aria-labelledby="why-heading">
+          <div className="about-why">
             <div className="about-why-intro">
-              <span className="about-label">Why choose us</span>
+              <span className="about-label about-label-center">Why choose us</span>
               <h2 id="why-heading" className="about-row-title">
                 What makes our classes different
               </h2>
@@ -179,10 +294,15 @@ const AboutUS = () => {
                 <p>All you need is an internet connection — join your class from the UK, USA, or anywhere in the world.</p>
               </div>
             </div>
-          </section>
+          </div>
+        </section>
 
-          <section className="about-final" aria-labelledby="final-image-heading">
-            <div className="about-final-image">
+        <div className="about-divider" aria-hidden="true"></div>
+
+        {/* Final row (white band) */}
+        <section className="about-band about-band-white" aria-labelledby="final-image-heading">
+          <div className="about-row">
+            <div className="about-row-image">
               <img
                 src={WhyChooseUsImg}
                 alt="A student's hand following along the Arabic text while reading from the Quran"
@@ -191,7 +311,7 @@ const AboutUS = () => {
                 height="450"
               />
             </div>
-            <div className="about-final-text">
+            <div className="about-row-text">
               <h2 id="final-image-heading" className="about-row-title">
                 Learning that's measured in real ability, not just attendance
               </h2>
@@ -200,9 +320,10 @@ const AboutUS = () => {
                 exactly where your child stands and what's coming next.
               </p>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
 
+        {/* CTA band */}
         <section className="about-cta" aria-labelledby="cta-heading">
           <div className="about-cta-pattern" aria-hidden="true"></div>
           <h2 id="cta-heading" className="about-cta-title">
