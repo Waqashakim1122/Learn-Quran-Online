@@ -3,12 +3,12 @@ import "./About.css";
 import Aboutimg from "../../assetes/about-img.jpg";
 
 const features = [
-  "Certified Quran Tutors",
-  "One-on-One Live Classes",
-  "Flexible Scheduling",
-  "Male & Female Teachers",
-  "Worldwide Access",
-  "Progress Tracking",
+  "One-on-One, Not Group Classes",
+  "Same Teacher Every Class",
+  "Tajweed-Focused Teaching",
+  "Male & Female Teachers Available",
+  "Classes That Fit Your Schedule",
+  "Free Trial, No Card Required",
 ];
 
 const About = ({ setPlaystate }) => {
@@ -39,14 +39,16 @@ const About = ({ setPlaystate }) => {
           <div className="about-eyebrow">About Our Academy</div>
 
           <h2 className="about-title">
-            Learn the Quran with Qualified Teachers From Anywhere in the World
+            A Personal, One-on-One Approach to Learning the Quran
           </h2>
 
           <p className="about-description">
-            Learn Quran Online provides structured Quran education for
-            children, adults, and families through one-on-one live classes,
-            experienced tutors, and flexible schedules designed to fit your
-            lifestyle.
+            Every student learns differently — so every class here is
+            one-on-one, not a crowded group call. Your teacher adapts the
+            pace to your child, corrects Tajweed in real time, and works
+            around your family's schedule, not the other way around.
+            Whether you're starting with Noorani Qaida or working toward
+            Hifz, you'll have the same dedicated teacher session after session.
           </p>
 
           <div className="about-features">
