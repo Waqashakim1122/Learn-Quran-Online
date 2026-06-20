@@ -14,7 +14,6 @@ function App() {
       <Header />
       <Hero />
       <div className='container'>
-        <Title subtitle='OUR COURSES' tittle='What We Offer' />
         <Program />
         <Title subtitle='About Us' tittle='Who We Are' />
         <About setPlaystate={setPlaystate} />
