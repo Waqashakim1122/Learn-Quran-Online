@@ -4,7 +4,7 @@ import { useAuth } from '../../Pages/AuthContext';
 import Logo from '../../../assetes/navbar-logo.png';
 import './Adminnavbar.css';
 
-const AdminNavbar = ({ section = 'Admin', title = 'Dashboard' }) => {
+const AdminNavbar = ({ section = 'Panel', title = 'Dashboard' }) => {
   const navigate = useNavigate();
   const { logout, userEmail } = useAuth();
   const [open, setOpen] = useState(false);
@@ -19,7 +19,6 @@ const AdminNavbar = ({ section = 'Admin', title = 'Dashboard' }) => {
     navigate('/login');
   };
 
-  // Close the dropdown when clicking outside of it
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -61,8 +60,9 @@ const AdminNavbar = ({ section = 'Admin', title = 'Dashboard' }) => {
               <div className="admin-status-dot"></div>
             </div>
             <div className="admin-user-info">
-              <strong>Admin</strong>
-              <span>{userEmail || 'Loading...'}</span>
+              <span className="admin-user-email">
+                {userEmail || 'waqashakim443@gmail.com'}
+              </span>
             </div>
             <svg className="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="6 9 12 15 18 9" />
@@ -72,7 +72,7 @@ const AdminNavbar = ({ section = 'Admin', title = 'Dashboard' }) => {
           <div className={`admin-dropdown ${open ? 'show' : ''}`}>
             <div className="admin-dropdown-header">
               <strong>Signed in as</strong>
-              <span>{userEmail || '—'}</span>
+              <span>{userEmail || 'waqashakim443@gmail.com'}</span>
             </div>
             <button type="button" className="admin-dropdown-item" onClick={handleLogout}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -80,7 +80,7 @@ const AdminNavbar = ({ section = 'Admin', title = 'Dashboard' }) => {
                 <polyline points="16 17 21 12 16 7" />
                 <line x1="21" y1="12" x2="9" y2="12" />
               </svg>
-              Logout
+              Sign Out
             </button>
           </div>
         </div>
