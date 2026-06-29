@@ -1,8 +1,158 @@
-.nav-link {
-    text-decoration: none;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.admin-sidebar {
+  width: 240px;
+  height: 100vh;
+  background: #1B4332;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 150;
+  font-family: 'Inter', sans-serif;
+  transition: transform 0.3s ease;
 }
 
-.nav-link:hover {
-    background-color: #e9ecef;
-    border-radius: 0.25rem;
+.admin-sidebar-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding: 96px 14px 24px;
+}
+
+/* Section label */
+.sidebar-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: rgba(201, 162, 39, 0.65);
+  padding: 0 10px;
+  margin-bottom: 8px;
+}
+
+/* Nav list */
+.sidebar-nav {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Each item */
+.sidebar-item {
+  position: relative;
+}
+
+.sidebar-item a {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  text-decoration: none !important;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.65);
+  transition: all 0.18s ease;
+}
+
+.sidebar-item a:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+}
+
+.sidebar-item a:hover svg {
+  opacity: 1;
+}
+
+/* Active state — React Router adds .active class automatically */
+.sidebar-item a.active {
+  background: rgba(201, 162, 39, 0.14);
+  color: #C9A227;
+  font-weight: 600;
+}
+
+.sidebar-item a.active svg {
+  stroke: #C9A227;
+  opacity: 1;
+}
+
+/* Gold left bar on active item */
+.sidebar-item a.active::before {
+  content: '';
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background: #C9A227;
+  border-radius: 0 3px 3px 0;
+}
+
+/* SVG icons */
+.sidebar-item a svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  stroke: rgba(255, 255, 255, 0.65);
+  opacity: 0.85;
+  transition: all 0.18s ease;
+}
+
+/* Divider */
+.sidebar-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 10px 8px;
+}
+
+/* Sign out button */
+.sidebar-logout {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  background: rgba(185, 28, 28, 0.12);
+  border: 1px solid rgba(185, 28, 28, 0.22);
+  border-radius: 9px;
+  color: #FCA5A5;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-align: left;
+}
+
+.sidebar-logout:hover {
+  background: rgba(185, 28, 28, 0.22);
+  border-color: rgba(185, 28, 28, 0.4);
+  color: #ffffff;
+}
+
+.sidebar-logout svg {
+  width: 16px;
+  height: 16px;
+  stroke: #FCA5A5;
+  flex-shrink: 0;
+  transition: stroke 0.18s ease;
+}
+
+.sidebar-logout:hover svg {
+  stroke: #ffffff;
+}
+
+/* Mobile — hidden off-screen by default */
+@media (max-width: 900px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+  }
+  .admin-sidebar.show {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
+  }
 }
