@@ -1,0 +1,305 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700&display=swap');
+
+/* ---------- Page shell ---------- */
+.enr-page {
+  min-height: 100vh;
+  background: #FAF8F2;
+  font-family: 'Inter', sans-serif;
+}
+
+.enr-body {
+  display: flex;
+}
+
+.enr-main {
+  flex: 1;
+  margin-left: 240px;
+  padding: 36px 40px 60px;
+}
+
+/* Mobile menu toggle (sidebar is fixed + off-canvas below 900px) */
+.enr-menu-btn {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  background: #1B4332;
+  color: #FAF6EE;
+  border: none;
+  padding: 9px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.enr-menu-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: #C9A227;
+}
+
+/* ---------- Header ---------- */
+.enr-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.enr-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #C9A227;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.enr-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1B4332;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+.enr-count-badge {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1B4332;
+  background: rgba(201, 162, 39, 0.16);
+  border: 1px solid rgba(201, 162, 39, 0.4);
+  padding: 3px 12px;
+  border-radius: 100px;
+}
+
+.enr-subtitle {
+  font-size: 13.5px;
+  color: #8A8273;
+  margin-top: 6px;
+}
+
+.enr-search {
+  position: relative;
+  width: 260px;
+  max-width: 100%;
+}
+
+.enr-search input {
+  width: 100%;
+  padding: 10px 14px 10px 36px;
+  border-radius: 9px;
+  border: 1px solid rgba(27, 67, 50, 0.14);
+  background: #ffffff;
+  font-size: 13.5px;
+  font-family: 'Inter', sans-serif;
+  color: #1B4332;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.enr-search input::placeholder {
+  color: #B3AC9C;
+}
+
+.enr-search input:focus {
+  border-color: #C9A227;
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.12);
+}
+
+.enr-search svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  stroke: #9A9384;
+}
+
+/* ---------- Card ---------- */
+.enr-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid rgba(27, 67, 50, 0.08);
+  box-shadow: 0 2px 8px rgba(11, 61, 46, 0.03), 0 12px 32px rgba(11, 61, 46, 0.04);
+  overflow: hidden;
+}
+
+/* ---------- Alert ---------- */
+.enr-alert {
+  margin: 20px;
+  padding: 13px 16px;
+  border-radius: 10px;
+  background: #FEF2F2;
+  border: 1px solid rgba(185, 28, 28, 0.18);
+  color: #B91C1C;
+  font-size: 13.5px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.enr-alert svg {
+  width: 17px;
+  height: 17px;
+  stroke: #B91C1C;
+  flex-shrink: 0;
+}
+
+/* ---------- Table ---------- */
+.enr-table-wrap {
+  overflow-x: auto;
+}
+
+table.enr-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px;
+}
+
+.enr-table thead th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9A9384;
+  background: #FBFAF6;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(27, 67, 50, 0.08);
+  white-space: nowrap;
+}
+
+.enr-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.enr-table tbody tr:hover {
+  background: rgba(201, 162, 39, 0.05);
+}
+
+.enr-table tbody tr:not(:last-child) td {
+  border-bottom: 1px solid rgba(27, 67, 50, 0.06);
+}
+
+.enr-table td {
+  padding: 14px 20px;
+  font-size: 13.5px;
+  color: #3F4A44;
+  vertical-align: middle;
+}
+
+.enr-student {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.enr-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(201, 162, 39, 0.2), rgba(27, 67, 50, 0.08));
+  border: 1.5px solid #C9A227;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  color: #1B4332;
+  flex-shrink: 0;
+}
+
+.enr-student-name {
+  font-weight: 600;
+  color: #1B4332;
+}
+
+.enr-course-badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1B4332;
+  background: rgba(27, 67, 50, 0.07);
+  border: 1px solid rgba(27, 67, 50, 0.14);
+  padding: 4px 11px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+.enr-muted {
+  color: #9A9384;
+}
+
+.enr-row-index {
+  color: #C9C2B0;
+  font-weight: 600;
+  font-size: 12.5px;
+}
+
+/* ---------- Empty / Loading states ---------- */
+.enr-state {
+  padding: 64px 24px;
+  text-align: center;
+}
+
+.enr-state svg {
+  width: 40px;
+  height: 40px;
+  stroke: #C9A227;
+  opacity: 0.6;
+  margin-bottom: 14px;
+}
+
+.enr-state-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1B4332;
+  margin-bottom: 4px;
+}
+
+.enr-state-sub {
+  font-size: 13px;
+  color: #9A9384;
+}
+
+.enr-spinner {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid rgba(201, 162, 39, 0.2);
+  border-top-color: #C9A227;
+  margin: 0 auto 14px;
+  animation: enr-spin 0.8s linear infinite;
+}
+
+@keyframes enr-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .enr-main {
+    margin-left: 0;
+    padding: 20px 18px 48px;
+  }
+  .enr-menu-btn {
+    display: inline-flex;
+  }
+  .enr-header {
+    align-items: flex-start;
+  }
+  .enr-search {
+    width: 100%;
+  }
+}
