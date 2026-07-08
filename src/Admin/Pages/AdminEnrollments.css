@@ -1,9 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700&display=swap');
+
+:root {
+  --ink-green: #1B4332;
+  --ink-green-deep: #0F2E22;
+  --gold: #C9A227;
+  --gold-deep: #8A6D1B;
+  --brown: #7A572F;
+  --cream: #FAF8F2;
+  --cream-deep: #F3EFE3;
+  --muted: #8A8273;
+  --text-body: #3F4A44;
+}
 
 /* ---------- Page shell ---------- */
 .enr-page {
   min-height: 100vh;
-  background: #FAF8F2;
+  background: var(--cream);
   font-family: 'Inter', sans-serif;
 }
 
@@ -14,14 +26,14 @@
 .enr-main {
   flex: 1;
   margin-left: 240px;
-  padding: 36px 40px 60px;
+  padding: 0 40px 60px;
 }
 
 .enr-menu-btn {
   display: none;
   align-items: center;
   gap: 8px;
-  background: #1B4332;
+  background: var(--ink-green);
   color: #FAF6EE;
   border: none;
   padding: 9px 14px;
@@ -35,65 +47,98 @@
 .enr-menu-btn svg {
   width: 16px;
   height: 16px;
-  stroke: #C9A227;
+  stroke: var(--gold);
 }
 
-/* ---------- Header ---------- */
+/* ---------- Header (now a unified banner, flush with sidebar tone) ---------- */
 .enr-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 16px;
-  margin-bottom: 24px;
+  margin: 0 -40px 28px;
+  padding: 34px 40px 26px;
+  background: linear-gradient(135deg, var(--ink-green-deep) 0%, var(--ink-green) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* signature motif: a repeating scalloped arch line along the header's base,
+   evoking a mihrab/arcade silhouette — quiet, thematic, not decorative filler */
+.enr-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 14px;
+  background-image: radial-gradient(circle at 12px 0, transparent 11px, var(--cream) 11.5px);
+  background-size: 24px 14px;
+  background-repeat: repeat-x;
 }
 
 .enr-eyebrow {
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #C9A227;
-  margin-bottom: 6px;
+  color: var(--gold);
+  margin-bottom: 8px;
   display: block;
 }
 
 .enr-title {
   font-family: 'Playfair Display', serif;
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 700;
-  color: #1B4332;
+  color: #FAF6EE;
   margin: 0;
 }
 
 .enr-subtitle {
   font-size: 13.5px;
-  color: #8A8273;
-  margin-top: 6px;
+  color: rgba(250, 246, 238, 0.68);
+  margin-top: 8px;
 }
 
 /* ---------- Stats overview ---------- */
 .enr-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 18px;
+  margin-bottom: 28px;
 }
 
 .enr-stat-card {
   background: #ffffff;
-  border: 1px solid rgba(27, 67, 50, 0.08);
-  border-radius: 14px;
-  padding: 20px 22px;
+  border: 1px solid rgba(27, 67, 50, 0.07);
+  border-left: 3px solid var(--ink-green);
+  border-radius: 12px;
+  padding: 22px 22px 22px 20px;
   display: flex;
   align-items: center;
   gap: 16px;
-  box-shadow: 0 2px 8px rgba(11, 61, 46, 0.03);
+  box-shadow: 0 1px 2px rgba(11, 61, 46, 0.04), 0 8px 20px rgba(11, 61, 46, 0.06);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.enr-stat-card:hover {
+  box-shadow: 0 2px 4px rgba(11, 61, 46, 0.06), 0 14px 28px rgba(11, 61, 46, 0.09);
+  transform: translateY(-1px);
+}
+
+.enr-stat-card:nth-child(2) {
+  border-left-color: var(--gold);
+}
+
+.enr-stat-card:nth-child(3) {
+  border-left-color: var(--brown);
 }
 
 .enr-stat-icon {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -108,30 +153,33 @@
 
 .enr-stat-icon--green {
   background: rgba(27, 67, 50, 0.09);
-  color: #1B4332;
+  color: var(--ink-green);
 }
 
 .enr-stat-icon--gold {
   background: rgba(201, 162, 39, 0.14);
-  color: #B08A1E;
+  color: var(--gold-deep);
 }
 
 .enr-stat-icon--brown {
   background: rgba(122, 87, 47, 0.1);
-  color: #7A572F;
+  color: var(--brown);
 }
 
+/* numerals moved off the serif display face and onto Inter with tabular
+   figures — this is what was rendering "0" as an ambiguous glyph before */
 .enr-stat-value {
-  font-family: 'Playfair Display', serif;
-  font-size: 24px;
-  font-weight: 700;
-  color: #1B4332;
+  font-family: 'Inter', sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--ink-green);
   line-height: 1.1;
+  letter-spacing: -0.01em;
 }
 
 .enr-stat-value--sm {
   font-size: 16px;
-  font-family: 'Inter', sans-serif;
   font-weight: 700;
 }
 
@@ -139,7 +187,7 @@
   font-size: 12px;
   color: #9A9384;
   font-weight: 500;
-  margin-top: 3px;
+  margin-top: 4px;
 }
 
 /* ---------- Card ---------- */
@@ -147,7 +195,7 @@
   background: #ffffff;
   border-radius: 16px;
   border: 1px solid rgba(27, 67, 50, 0.08);
-  box-shadow: 0 2px 8px rgba(11, 61, 46, 0.03), 0 12px 32px rgba(11, 61, 46, 0.04);
+  box-shadow: 0 1px 2px rgba(11, 61, 46, 0.04), 0 12px 32px rgba(11, 61, 46, 0.05);
   overflow: hidden;
 }
 
@@ -156,16 +204,17 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 14px;
-  padding: 20px 24px;
-  border-bottom: 1px solid rgba(27, 67, 50, 0.07);
+  gap: 16px;
+  padding: 22px 24px;
+  border-bottom: 1px solid rgba(27, 67, 50, 0.08);
+  background: var(--cream-deep);
 }
 
 .enr-card-title {
   font-family: 'Playfair Display', serif;
   font-size: 17px;
   font-weight: 700;
-  color: #1B4332;
+  color: var(--ink-green);
   margin: 0;
   display: flex;
   align-items: center;
@@ -174,9 +223,10 @@
 
 .enr-count-badge {
   font-family: 'Inter', sans-serif;
+  font-variant-numeric: tabular-nums;
   font-size: 12.5px;
   font-weight: 700;
-  color: #1B4332;
+  color: var(--ink-green);
   background: rgba(201, 162, 39, 0.16);
   border: 1px solid rgba(201, 162, 39, 0.4);
   padding: 2px 10px;
@@ -186,7 +236,7 @@
 .enr-toolbar-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
@@ -196,26 +246,26 @@
 
 .enr-select {
   appearance: none;
-  padding: 9px 32px 9px 14px;
+  padding: 10px 34px 10px 15px;
   border-radius: 9px;
-  border: 1px solid rgba(27, 67, 50, 0.14);
+  border: 1px solid rgba(27, 67, 50, 0.16);
   background: #ffffff;
   font-size: 13px;
   font-weight: 500;
   font-family: 'Inter', sans-serif;
-  color: #1B4332;
+  color: var(--ink-green);
   outline: none;
   cursor: pointer;
   transition: border-color 0.15s ease;
 }
 
 .enr-select:focus {
-  border-color: #C9A227;
+  border-color: var(--gold);
 }
 
 .enr-select-chevron {
   position: absolute;
-  right: 10px;
+  right: 11px;
   top: 50%;
   transform: translateY(-50%);
   width: 14px;
@@ -226,19 +276,19 @@
 
 .enr-search {
   position: relative;
-  width: 250px;
+  width: 260px;
   max-width: 100%;
 }
 
 .enr-search input {
   width: 100%;
-  padding: 9px 14px 9px 36px;
+  padding: 10px 14px 10px 37px;
   border-radius: 9px;
-  border: 1px solid rgba(27, 67, 50, 0.14);
+  border: 1px solid rgba(27, 67, 50, 0.16);
   background: #ffffff;
   font-size: 13.5px;
   font-family: 'Inter', sans-serif;
-  color: #1B4332;
+  color: var(--ink-green);
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
@@ -248,13 +298,13 @@
 }
 
 .enr-search input:focus {
-  border-color: #C9A227;
+  border-color: var(--gold);
   box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.12);
 }
 
 .enr-search svg {
   position: absolute;
-  left: 12px;
+  left: 13px;
   top: 50%;
   transform: translateY(-50%);
   width: 15px;
@@ -299,12 +349,12 @@ table.enr-table {
   text-align: left;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: #9A9384;
-  background: #FBFAF6;
-  padding: 13px 24px;
-  border-bottom: 1px solid rgba(27, 67, 50, 0.08);
+  color: #8A8273;
+  background: var(--cream-deep);
+  padding: 14px 24px;
+  border-bottom: 1px solid rgba(27, 67, 50, 0.1);
   white-space: nowrap;
 }
 
@@ -312,18 +362,22 @@ table.enr-table {
   transition: background 0.15s ease;
 }
 
+.enr-table tbody tr:nth-child(even) {
+  background: rgba(201, 162, 39, 0.025);
+}
+
 .enr-table tbody tr:hover {
-  background: rgba(201, 162, 39, 0.05);
+  background: rgba(201, 162, 39, 0.07);
 }
 
 .enr-table tbody tr:not(:last-child) td {
-  border-bottom: 1px solid rgba(27, 67, 50, 0.06);
+  border-bottom: 1px solid rgba(27, 67, 50, 0.07);
 }
 
 .enr-table td {
-  padding: 14px 24px;
+  padding: 15px 24px;
   font-size: 13.5px;
-  color: #3F4A44;
+  color: var(--text-body);
   vertical-align: middle;
 }
 
@@ -337,20 +391,21 @@ table.enr-table {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(201, 162, 39, 0.2), rgba(27, 67, 50, 0.08));
-  border: 1.5px solid #C9A227;
+  background: linear-gradient(135deg, rgba(201, 162, 39, 0.22), rgba(27, 67, 50, 0.1));
+  border: 1.5px solid var(--gold);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 12px;
-  color: #1B4332;
+  color: var(--ink-green);
   flex-shrink: 0;
 }
 
 .enr-student-name {
   font-weight: 600;
-  color: #1B4332;
+  color: var(--ink-green);
+  text-transform: capitalize;
 }
 
 .enr-course-badge {
@@ -364,25 +419,25 @@ table.enr-table {
 }
 
 .enr-badge--green {
-  color: #1B4332;
+  color: var(--ink-green);
   background: rgba(27, 67, 50, 0.09);
   border-color: rgba(27, 67, 50, 0.16);
 }
 
 .enr-badge--gold {
-  color: #8A6D1B;
+  color: var(--gold-deep);
   background: rgba(201, 162, 39, 0.14);
   border-color: rgba(201, 162, 39, 0.3);
 }
 
 .enr-badge--brown {
-  color: #7A572F;
+  color: var(--brown);
   background: rgba(122, 87, 47, 0.1);
   border-color: rgba(122, 87, 47, 0.2);
 }
 
 .enr-badge--default {
-  color: #1B4332;
+  color: var(--ink-green);
   background: rgba(27, 67, 50, 0.07);
   border-color: rgba(27, 67, 50, 0.14);
 }
@@ -399,7 +454,7 @@ table.enr-table {
 
 .enr-time-ago {
   font-size: 11px;
-  color: #C9A227;
+  color: var(--gold-deep);
   font-weight: 600;
 }
 
@@ -412,7 +467,7 @@ table.enr-table {
 .enr-state svg {
   width: 40px;
   height: 40px;
-  stroke: #C9A227;
+  stroke: var(--gold);
   opacity: 0.6;
   margin-bottom: 14px;
 }
@@ -420,7 +475,7 @@ table.enr-table {
 .enr-state-title {
   font-size: 15px;
   font-weight: 600;
-  color: #1B4332;
+  color: var(--ink-green);
   margin-bottom: 4px;
 }
 
@@ -434,7 +489,7 @@ table.enr-table {
   height: 30px;
   border-radius: 50%;
   border: 3px solid rgba(201, 162, 39, 0.2);
-  border-top-color: #C9A227;
+  border-top-color: var(--gold);
   margin: 0 auto 14px;
   animation: enr-spin 0.8s linear infinite;
 }
@@ -447,13 +502,16 @@ table.enr-table {
 @media (max-width: 900px) {
   .enr-main {
     margin-left: 0;
-    padding: 20px 18px 48px;
+    padding: 0 18px 48px;
+  }
+  .enr-header {
+    margin: 0 -18px 24px;
+    padding: 24px 18px 22px;
+    align-items: flex-start;
   }
   .enr-menu-btn {
     display: inline-flex;
-  }
-  .enr-header {
-    align-items: flex-start;
+    margin: 20px 0 0;
   }
   .enr-stats {
     grid-template-columns: 1fr;
