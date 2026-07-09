@@ -1,14 +1,40 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../Pages/AuthContext';
 import Logo from '../../../assetes/navbar-logo.png';
 import './Adminnavbar.css';
 
-const AdminNavbar = ({ section = 'Panel', title = 'Dashboard' }) => {
+/*
+  Single source of truth for breadcrumb labels.
+  Add a new page? Add one line here — nothing else to touch.
+  Keys must match the `path` used in your <Route> / <NavLink to="..."> exactly.
+*/
+const PAGE_MAP = {
+  '/dashboard': { section: 'Admin Panel', title: 'Dashboard' },
+  '/enrollments': { section: 'Admin Panel', title: 'Enrollments' },
+  '/courselist': { section: 'Admin Panel', title: 'Courses List' },
+  '/addCourse': { section: 'Admin Panel', title: 'Add Course' },
+  '/contact-submissions': { section: 'Admin Panel', title: 'Contact Messages' },
+};
+
+const DEFAULT_PAGE = { section: 'Admin Panel', title: 'Dashboard' };
+
+/*
+  section/title props are now OPTIONAL.
+  - Pass nothing (recommended): breadcrumb is looked up from the current route.
+  - Pass explicit props: they win over the route lookup (useful for dynamic
+    titles, e.g. <AdminNavbar title={`Edit: ${course.name}`} />).
+*/
+const AdminNavbar = ({ section, title }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { logout, userEmail } = useAuth();
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
+
+  const routeMatch = PAGE_MAP[location.pathname] || DEFAULT_PAGE;
+  const resolvedSection = section || routeMatch.section;
+  const resolvedTitle = title || routeMatch.title;
 
   const initials = userEmail
     ? userEmail.slice(0, 2).toUpperCase()
@@ -36,16 +62,13 @@ const AdminNavbar = ({ section = 'Panel', title = 'Dashboard' }) => {
           <img src={Logo} alt="Learn Quran Online" />
           <span className="admin-navbar-badge">Admin</span>
         </Link>
-
         <div className="admin-navbar-divider"></div>
-
         <div className="admin-breadcrumb">
-          <span className="admin-breadcrumb-root">{section}</span>
+          <span className="admin-breadcrumb-root">{resolvedSection}</span>
           <span className="admin-breadcrumb-sep">/</span>
-          <span className="admin-breadcrumb-current">{title}</span>
+          <span className="admin-breadcrumb-current">{resolvedTitle}</span>
         </div>
       </div>
-
       <div className="admin-navbar-right">
         <div className="admin-user-menu" ref={menuRef}>
           <button
@@ -68,7 +91,6 @@ const AdminNavbar = ({ section = 'Panel', title = 'Dashboard' }) => {
               <polyline points="6 9 12 15 18 9" />
             </svg>
           </button>
-
           <div className={`admin-dropdown ${open ? 'show' : ''}`}>
             <div className="admin-dropdown-header">
               <strong>Signed in as</strong>
