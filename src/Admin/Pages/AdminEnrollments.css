@@ -106,7 +106,57 @@ HEADER
 
 }
 
+.enr-header-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+}
+
 .enr-export-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    border:1px solid var(--border);
+
+    background:#fff;
+
+    color:var(--primary);
+
+    padding:12px 20px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    font-size:14px;
+
+    transition:.25s;
+
+}
+
+.enr-export-btn:hover{
+
+    background:var(--hover);
+
+}
+
+.enr-add-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
 
     border:none;
 
@@ -122,11 +172,13 @@ HEADER
 
     font-weight:600;
 
+    font-size:14px;
+
     transition:.25s;
 
 }
 
-.enr-export-btn:hover{
+.enr-add-btn:hover{
 
     background:#1E293B;
 
@@ -184,12 +236,51 @@ STATS
 
     transition:.25s;
 
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:16px;
+
 }
 
 .enr-stat-card:hover{
 
     transform:translateY(-3px);
 
+}
+
+.enr-stat-icon{
+
+    width:44px;
+
+    height:44px;
+
+    min-width:44px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+.enr-stat-icon.green{
+    background:#DCFCE7;
+    color:#16A34A;
+}
+
+.enr-stat-icon.blue{
+    background:#DBEAFE;
+    color:#2563EB;
+}
+
+.enr-stat-icon.orange{
+    background:#FFEDD5;
+    color:#EA580C;
 }
 
 .enr-stat-card span{
@@ -200,7 +291,7 @@ STATS
 
     font-size:14px;
 
-    margin-bottom:10px;
+    margin-bottom:8px;
 
 }
 
@@ -208,9 +299,21 @@ STATS
 
     color:var(--primary);
 
-    font-size:34px;
+    font-size:32px;
 
     font-weight:700;
+
+    line-height:1;
+
+    margin-bottom:6px;
+
+}
+
+.enr-stat-sub{
+
+    color:var(--secondary);
+
+    font-size:12px;
 
 }
 
@@ -238,19 +341,45 @@ TOOLBAR
 
     box-shadow:var(--shadow);
 
+    align-items:center;
+
 }
 
 /* ======================================
 SEARCH
 ====================================== */
 
-.enr-search{
+.enr-search-wrap{
 
     flex:1;
 
     min-width:250px;
 
-    padding:12px 18px;
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+
+}
+
+.enr-search-wrap svg{
+
+    position:absolute;
+
+    left:16px;
+
+    color:var(--secondary);
+
+    pointer-events:none;
+
+}
+
+.enr-search{
+
+    width:100%;
+
+    padding:12px 18px 12px 44px;
 
     border:1px solid var(--border);
 
@@ -298,7 +427,49 @@ SELECT
 
     border-color:var(--info);
 
-}/* ==========================================================
+}
+
+/* ======================================
+RESET BUTTON
+====================================== */
+
+.enr-reset-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    border:1px solid var(--border);
+
+    background:white;
+
+    color:var(--primary);
+
+    padding:12px 18px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    font-size:14px;
+
+    transition:.25s;
+
+    white-space:nowrap;
+
+}
+
+.enr-reset-btn:hover{
+
+    background:var(--hover);
+
+}
+
+/* ==========================================================
    TABLE
 ========================================================== */
 
@@ -327,12 +498,14 @@ SELECT
 
 .enr-table-wrapper th{
     text-align:left;
-    padding:18px 22px;
-    font-size:13px;
-    font-weight:600;
-    color:#475569;
+    padding:16px 22px;
+    font-size:12px;
+    font-weight:700;
+    color:#94A3B8;
     border-bottom:1px solid var(--border);
     white-space:nowrap;
+    text-transform:uppercase;
+    letter-spacing:.05em;
 }
 
 .enr-table-wrapper td{
@@ -350,6 +523,10 @@ SELECT
     background:#F8FAFC;
 }
 
+.enr-table-wrapper tbody tr:last-child td{
+    border-bottom:none;
+}
+
 /* ==========================================================
    STUDENT
 ========================================================== */
@@ -361,21 +538,27 @@ SELECT
 }
 
 .enr-avatar{
-    width:44px;
-    height:44px;
+    width:40px;
+    height:40px;
     border-radius:50%;
-    background:#0F172A;
-    color:#fff;
+    background:#EEF2F6;
+    color:#475569;
     display:flex;
     align-items:center;
     justify-content:center;
     font-weight:700;
-    font-size:15px;
+    font-size:14px;
     flex-shrink:0;
+}
+
+.enr-avatar.unknown{
+    background:#F1F5F9;
+    color:#94A3B8;
 }
 
 .enr-student h4{
     font-size:15px;
+    font-weight:600;
     color:var(--primary);
     margin-bottom:4px;
 }
@@ -383,6 +566,22 @@ SELECT
 .enr-student span{
     color:var(--secondary);
     font-size:12px;
+}
+
+/* ==========================================================
+   ENROLLED DATE
+========================================================== */
+
+.enr-date h5{
+    font-size:14px;
+    font-weight:500;
+    color:var(--primary);
+    margin-bottom:3px;
+}
+
+.enr-date span{
+    font-size:12px;
+    color:var(--secondary);
 }
 
 /* ==========================================================
@@ -432,10 +631,20 @@ SELECT
     display:inline-flex;
     align-items:center;
     justify-content:center;
+    gap:6px;
     padding:6px 14px;
     border-radius:30px;
     font-size:12px;
     font-weight:600;
+}
+
+.status-badge::before{
+    content:"";
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:currentColor;
+    display:inline-block;
 }
 
 .status-badge.success{
@@ -468,40 +677,35 @@ SELECT
 }
 
 .enr-actions button{
-    border:none;
-    padding:8px 14px;
+    border:1px solid var(--border);
+    background:white;
+    width:34px;
+    height:34px;
     border-radius:8px;
     cursor:pointer;
-    font-size:13px;
-    font-weight:600;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
     transition:.25s;
+    color:var(--secondary);
 }
 
-.enr-actions button:nth-child(1){
+.enr-actions button.view:hover{
     background:#DBEAFE;
     color:#1D4ED8;
+    border-color:#DBEAFE;
 }
 
-.enr-actions button:nth-child(1):hover{
-    background:#BFDBFE;
-}
-
-.enr-actions button:nth-child(2){
+.enr-actions button.edit:hover{
     background:#ECFDF5;
     color:#15803D;
+    border-color:#ECFDF5;
 }
 
-.enr-actions button:nth-child(2):hover{
-    background:#D1FAE5;
-}
-
-.enr-actions .danger{
+.enr-actions button.danger:hover{
     background:#FEE2E2;
     color:#DC2626;
-}
-
-.enr-actions .danger:hover{
-    background:#FECACA;
+    border-color:#FEE2E2;
 }
 
 /* ==========================================================
@@ -550,11 +754,22 @@ SELECT
 
 .enr-pagination{
     display:flex;
-    justify-content:flex-end;
+    justify-content:space-between;
     align-items:center;
     gap:10px;
-    padding:20px;
+    padding:18px 22px;
     border-top:1px solid var(--border);
+}
+
+.enr-pagination-info{
+    color:var(--secondary);
+    font-size:13px;
+}
+
+.enr-pagination-controls{
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
 .enr-pagination button{
@@ -564,9 +779,16 @@ SELECT
     border-radius:8px;
     cursor:pointer;
     transition:.25s;
+    font-size:13px;
+    color:var(--primary);
 }
 
-.enr-pagination button:hover{
+.enr-pagination button:disabled{
+    color:#CBD5E1;
+    cursor:not-allowed;
+}
+
+.enr-pagination button:hover:not(:disabled){
     background:#F8FAFC;
 }
 
@@ -574,6 +796,8 @@ SELECT
     background:#0F172A;
     color:white;
     border-color:#0F172A;
+    width:38px;
+    padding:10px 0;
 }
 
 /* ==========================================================
@@ -597,19 +821,34 @@ SELECT
         gap:15px;
     }
 
+    .enr-header-actions{
+        width:100%;
+    }
+
+    .enr-header-actions button{
+        flex:1;
+        justify-content:center;
+    }
+
     .enr-stats{
         grid-template-columns:repeat(2,1fr);
     }
 
     .enr-toolbar{
         flex-direction:column;
+        align-items:stretch;
     }
 
-    .enr-search{
+    .enr-search-wrap{
         width:100%;
     }
 
     .enr-toolbar select{
+        width:100%;
+    }
+
+    .enr-reset-btn{
+        justify-content:center;
         width:100%;
     }
 
@@ -629,6 +868,11 @@ SELECT
         min-width:750px;
     }
 
+    .enr-pagination{
+        flex-direction:column;
+        gap:12px;
+    }
+
 }
 
 @media(max-width:480px){
@@ -642,7 +886,7 @@ SELECT
     }
 
     .enr-stat-card h2{
-        font-size:28px;
+        font-size:26px;
     }
 
     .enr-pagination{
