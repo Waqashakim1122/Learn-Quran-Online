@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import AdminSidebar from "../MyComponents/Sidebar/Sidebar";
 import AdminNavbar from "../MyComponents/AdminNavebar/Adminnavbar";
 import supabase from "../../lib/supabaseClient";
 import "./AdminEnrollments.css";
 
 const PAGE_SIZE = 10;
+const SEARCH_DEBOUNCE_MS = 300;
 
 const STATUS_COLORS = {
     Active: "success",
@@ -19,6 +20,27 @@ const COURSE_COLORS = {
     "Quran Reading": "purple",
     "Noorani Qaida": "orange",
     "Tajweed Course": "gold"
+};
+
+/* Rotating palette for named-student avatars so the table doesn't read
+   as one flat wall of gray circles. Deterministic per-name (hashed),
+   so the same student always gets the same color across renders/pages. */
+const AVATAR_PALETTE = [
+    { bg: "#DCFCE7", fg: "#166534" },
+    { bg: "#DBEAFE", fg: "#1D4ED8" },
+    { bg: "#FEF3C7", fg: "#B45309" },
+    { bg: "#F3E8FF", fg: "#7E22CE" },
+    { bg: "#FFE4E6", fg: "#BE123C" },
+    { bg: "#E0F2FE", fg: "#0369A1" },
+];
+
+const hashString = (str) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = (hash << 5) - hash + str.charCodeAt(i);
+        hash |= 0;
+    }
+    return Math.abs(hash);
 };
 
 /* ================= ICONS ================= */
@@ -104,6 +126,65 @@ const IconTrash = () => (
     </svg>
 );
 
+const IconEmpty = () => (
+    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <circle cx="11" cy="11" r="7" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        <line x1="8" y1="11" x2="14" y2="11" />
+    </svg>
+);
+
+/* Renders N shimmering placeholder rows while data is loading, so the
+   table shell (headers, toolbar) stays stable instead of collapsing
+   into a spinner — this is what keeps layout shift to zero. */
+const SkeletonRows = ({ rows = 6 }) => (
+    <>
+        {Array.from({ length: rows }, (_, i) => (
+            <tr key={i} className="enr-skeleton-row" aria-hidden="true">
+                <td>
+                    <div className="enr-student">
+                        <div className="enr-skel enr-skel-avatar" />
+                        <div className="enr-skel enr-skel-line" style={{ width: "120px" }} />
+                    </div>
+                </td>
+                <td><div className="enr-skel enr-skel-line" style={{ width: "140px" }} /></td>
+                <td><div className="enr-skel enr-skel-line" style={{ width: "90px" }} /></td>
+                <td><div className="enr-skel enr-skel-pill" /></td>
+                <td><div className="enr-skel enr-skel-pill" /></td>
+                <td><div className="enr-skel enr-skel-line" style={{ width: "80px" }} /></td>
+                <td><div className="enr-skel enr-skel-line" style={{ width: "100px" }} /></td>
+            </tr>
+        ))}
+    </>
+);
+
+/* Windowed pagination: always shows first/last page, current page +/- 1,
+   and collapses the rest into an ellipsis instead of rendering a button
+   for every page — keeps the control usable once there are 20+ pages. */
+const getPageWindow = (current, total) => {
+    const pages = [];
+    const addRange = (start, end) => {
+        for (let i = start; i <= end; i++) pages.push(i);
+    };
+
+    if (total <= 7) {
+        addRange(1, total);
+        return pages;
+    }
+
+    pages.push(1);
+
+    if (current > 3) pages.push("ellipsis-start");
+
+    addRange(Math.max(2, current - 1), Math.min(total - 1, current + 1));
+
+    if (current < total - 2) pages.push("ellipsis-end");
+
+    pages.push(total);
+
+    return pages;
+};
+
 const AdminEnrollments = () => {
 
     const [showSidebar, setShowSidebar] = useState(false);
@@ -114,6 +195,7 @@ const AdminEnrollments = () => {
 
     const [enrollments, setEnrollments] = useState([]);
 
+    const [searchInput, setSearchInput] = useState("");
     const [search, setSearch] = useState("");
 
     const [courseFilter, setCourseFilter] = useState("all");
@@ -134,11 +216,26 @@ const AdminEnrollments = () => {
 
     }, []);
 
+    /* Debounce the raw keystrokes into `search` so filtering (and the
+       resulting re-render of a possibly large table) only runs once
+       the user pauses typing, not on every character. */
+    useEffect(() => {
+
+        const handle = setTimeout(() => {
+            setSearch(searchInput);
+            setCurrentPage(1);
+        }, SEARCH_DEBOUNCE_MS);
+
+        return () => clearTimeout(handle);
+
+    }, [searchInput]);
+
     const loadEnrollments = async () => {
 
         try {
 
             setLoading(true);
+            setError("");
 
             const { data, error } = await supabase
                 .from("enrollments")
@@ -156,7 +253,7 @@ const AdminEnrollments = () => {
 
         } catch (err) {
 
-            setError("Unable to load enrollments.");
+            setError("Unable to load enrollments. Please try again.");
 
         } finally {
 
@@ -166,15 +263,16 @@ const AdminEnrollments = () => {
 
     };
 
-    const resetFilters = () => {
+    const resetFilters = useCallback(() => {
 
+        setSearchInput("");
         setSearch("");
         setCourseFilter("all");
         setStatusFilter("all");
         setSortBy("newest");
         setCurrentPage(1);
 
-    };
+    }, []);
 
     const courseOptions = useMemo(() => {
 
@@ -288,9 +386,16 @@ const AdminEnrollments = () => {
         sortBy
     ]);
 
-    const totalPages = Math.ceil(
-        filteredEnrollments.length / PAGE_SIZE
+    const totalPages = Math.max(
+        1,
+        Math.ceil(filteredEnrollments.length / PAGE_SIZE)
     );
+
+    // Guard against being stranded on a page that no longer exists
+    // once filters shrink the result set.
+    useEffect(() => {
+        if (currentPage > totalPages) setCurrentPage(totalPages);
+    }, [totalPages, currentPage]);
 
     const paginatedEnrollments = useMemo(() => {
 
@@ -306,6 +411,11 @@ const AdminEnrollments = () => {
         currentPage
     ]);
 
+    const pageWindow = useMemo(
+        () => getPageWindow(currentPage, totalPages),
+        [currentPage, totalPages]
+    );
+
     const rangeStart = filteredEnrollments.length === 0
         ? 0
         : (currentPage - 1) * PAGE_SIZE + 1;
@@ -319,7 +429,7 @@ const AdminEnrollments = () => {
 
         if (!name) return "?";
 
-        const words = name.split(" ");
+        const words = name.trim().split(/\s+/);
 
         if (words.length === 1)
             return words[0].substring(0, 2).toUpperCase();
@@ -328,6 +438,16 @@ const AdminEnrollments = () => {
             words[0][0] +
             words[1][0]
         ).toUpperCase();
+
+    };
+
+    const getAvatarStyle = (name) => {
+
+        if (!name) return { background: "#F1F5F9", color: "#94A3B8" };
+
+        const palette = AVATAR_PALETTE[hashString(name) % AVATAR_PALETTE.length];
+
+        return { background: palette.bg, color: palette.fg };
 
     };
 
@@ -367,13 +487,13 @@ const AdminEnrollments = () => {
 
     };
 
+    const hasActiveFilters =
+        search || courseFilter !== "all" || statusFilter !== "all" || sortBy !== "newest";
+
     return (
         <div className="enr-page">
 
-            <AdminNavbar
-                section="Admin Panel"
-                title="Enrollments"
-            />
+            <AdminNavbar />
 
             <div className="enr-body">
 
@@ -387,6 +507,7 @@ const AdminEnrollments = () => {
                     <button
                         className="enr-mobile-menu"
                         onClick={toggleSidebar}
+                        aria-label="Toggle navigation menu"
                     >
                         ☰ Menu
                     </button>
@@ -409,14 +530,14 @@ const AdminEnrollments = () => {
 
                         <div className="enr-header-actions">
 
-                            <button className="enr-export-btn">
+                            <button className="enr-export-btn" type="button">
 
                                 <IconDownload />
                                 Export CSV
 
                             </button>
 
-                            <button className="enr-add-btn">
+                            <button className="enr-add-btn" type="button">
 
                                 <IconPlus />
                                 Add Student
@@ -524,12 +645,10 @@ const AdminEnrollments = () => {
                             <input
                                 type="text"
                                 placeholder="Search by name, email or course..."
-                                value={search}
-                                onChange={(e) => {
-                                    setSearch(e.target.value);
-                                    setCurrentPage(1);
-                                }}
+                                value={searchInput}
+                                onChange={(e) => setSearchInput(e.target.value)}
                                 className="enr-search"
+                                aria-label="Search enrollments"
                             />
 
                         </div>
@@ -540,6 +659,7 @@ const AdminEnrollments = () => {
                                 setCourseFilter(e.target.value);
                                 setCurrentPage(1);
                             }}
+                            aria-label="Filter by course"
                         >
 
                             <option value="all">
@@ -567,6 +687,7 @@ const AdminEnrollments = () => {
                                 setStatusFilter(e.target.value);
                                 setCurrentPage(1);
                             }}
+                            aria-label="Filter by status"
                         >
 
                             <option value="all">
@@ -596,6 +717,7 @@ const AdminEnrollments = () => {
                             onChange={(e) =>
                                 setSortBy(e.target.value)
                             }
+                            aria-label="Sort order"
                         >
 
                             <option value="newest">
@@ -611,6 +733,8 @@ const AdminEnrollments = () => {
                         <button
                             className="enr-reset-btn"
                             onClick={resetFilters}
+                            type="button"
+                            disabled={!hasActiveFilters}
                         >
 
                             <IconRefresh />
@@ -624,29 +748,38 @@ const AdminEnrollments = () => {
 
                     <div className="enr-table-card">
 
-                        {loading ? (
+                        {error ? (
 
-                            <div className="enr-loading">
+                            <div className="enr-error" role="alert">
 
-                                Loading enrollments...
+                                <p>{error}</p>
 
-                            </div>
-
-                        ) : error ? (
-
-                            <div className="enr-error">
-
-                                {error}
+                                <button className="enr-retry-btn" onClick={loadEnrollments} type="button">
+                                    Try Again
+                                </button>
 
                             </div>
 
-                        ) : filteredEnrollments.length === 0 ? (
+                        ) : !loading && filteredEnrollments.length === 0 ? (
 
                             <div className="enr-empty">
 
+                                <div className="enr-empty-icon"><IconEmpty /></div>
+
                                 <h3>No enrollments found</h3>
 
-                                <p>Try adjusting your search or filters.</p>
+                                <p>
+                                    {hasActiveFilters
+                                        ? "Try adjusting your search or filters."
+                                        : "New enrollments will show up here."}
+                                </p>
+
+                                {hasActiveFilters && (
+                                    <button className="enr-reset-btn" onClick={resetFilters} type="button">
+                                        <IconRefresh />
+                                        Clear filters
+                                    </button>
+                                )}
 
                             </div>
 
@@ -654,7 +787,7 @@ const AdminEnrollments = () => {
 
                             <>
 
-                            <div className="enr-table-wrapper">
+                            <div className="enr-table-wrapper" aria-busy={loading}>
 
                                 <table>
 
@@ -682,7 +815,11 @@ const AdminEnrollments = () => {
 
                                     <tbody>
 
-                                        {paginatedEnrollments.map(student => (
+                                        {loading ? (
+
+                                            <SkeletonRows rows={Math.min(PAGE_SIZE, 6)} />
+
+                                        ) : paginatedEnrollments.map(student => (
 
                                             <tr key={student.id}>
 
@@ -690,7 +827,10 @@ const AdminEnrollments = () => {
 
                                                     <div className="enr-student">
 
-                                                        <div className={`enr-avatar ${student.student_name ? "" : "unknown"}`}>
+                                                        <div
+                                                            className="enr-avatar"
+                                                            style={getAvatarStyle(student.student_name)}
+                                                        >
 
                                                             {getInitials(student.student_name)}
 
@@ -712,13 +852,13 @@ const AdminEnrollments = () => {
 
                                                 <td>
 
-                                                    {student.email || "—"}
+                                                    {student.email || <span className="enr-muted">—</span>}
 
                                                 </td>
 
                                                 <td>
 
-                                                    {student.phone || "—"}
+                                                    {student.phone || <span className="enr-muted">—</span>}
 
                                                 </td>
 
@@ -762,15 +902,15 @@ const AdminEnrollments = () => {
 
                                                     <div className="enr-actions">
 
-                                                        <button className="view" title="View">
+                                                        <button className="view" aria-label={`View ${student.student_name || "student"}`} type="button">
                                                             <IconEye />
                                                         </button>
 
-                                                        <button className="edit" title="Edit">
+                                                        <button className="edit" aria-label={`Edit ${student.student_name || "student"}`} type="button">
                                                             <IconEdit />
                                                         </button>
 
-                                                        <button className="danger" title="Delete">
+                                                        <button className="danger" aria-label={`Delete ${student.student_name || "student"}`} type="button">
                                                             <IconTrash />
                                                         </button>
 
@@ -788,11 +928,14 @@ const AdminEnrollments = () => {
 
                             </div>
 
+                            {!loading && (
+
                             <div className="enr-pagination">
 
                                 <div className="enr-pagination-info">
 
-                                    Showing {rangeStart} to {rangeEnd} of {filteredEnrollments.length} results
+                                    Showing <strong>{rangeStart}</strong> to <strong>{rangeEnd}</strong> of{" "}
+                                    <strong>{filteredEnrollments.length}</strong> results
 
                                 </div>
 
@@ -801,25 +944,33 @@ const AdminEnrollments = () => {
                                     <button
                                         disabled={currentPage === 1}
                                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                        type="button"
+                                        aria-label="Previous page"
                                     >
                                         Previous
                                     </button>
 
-                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-
-                                        <button
-                                            key={page}
-                                            className={page === currentPage ? "active" : ""}
-                                            onClick={() => setCurrentPage(page)}
-                                        >
-                                            {page}
-                                        </button>
-
-                                    ))}
+                                    {pageWindow.map((page, idx) =>
+                                        typeof page === "number" ? (
+                                            <button
+                                                key={page}
+                                                className={page === currentPage ? "active" : ""}
+                                                onClick={() => setCurrentPage(page)}
+                                                type="button"
+                                                aria-current={page === currentPage ? "page" : undefined}
+                                            >
+                                                {page}
+                                            </button>
+                                        ) : (
+                                            <span key={`${page}-${idx}`} className="enr-pagination-ellipsis">…</span>
+                                        )
+                                    )}
 
                                     <button
                                         disabled={currentPage === totalPages}
                                         onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                        type="button"
+                                        aria-label="Next page"
                                     >
                                         Next
                                     </button>
@@ -827,6 +978,8 @@ const AdminEnrollments = () => {
                                 </div>
 
                             </div>
+
+                            )}
 
                             </>
 
