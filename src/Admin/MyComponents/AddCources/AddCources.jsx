@@ -186,17 +186,17 @@ const AddCourse = () => {
                                 <Col lg={9} xl={8}>
                                     <div className="add-course-header">
                                         <div>
+                                            <span className="add-course-eyebrow">Course Catalog</span>
                                             <h1 className="add-course-title">Add New Course</h1>
                                             <p className="add-course-subtitle">
                                                 Create a new course listing for the Learn Quran Online catalog.
                                             </p>
                                         </div>
                                         <Button
-                                            variant="outline-secondary"
                                             className="add-course-back-btn"
                                             onClick={() => navigate('/courselist')}
                                         >
-                                            Back to Courses
+                                            <span aria-hidden="true">&larr;</span> Back to Courses
                                         </Button>
                                     </div>
 
@@ -352,6 +352,7 @@ const AddCourse = () => {
                                                             <Button
                                                                 type="button"
                                                                 variant="outline-secondary"
+                                                                className="add-course-clear-btn"
                                                                 onClick={resetForm}
                                                                 disabled={loading}
                                                             >
@@ -384,9 +385,9 @@ const AddCourse = () => {
                                         </Col>
 
                                         <Col lg={5}>
-                                            <Card className="add-course-preview-card">
-                                                <Card.Body>
-                                                    <h6 className="preview-heading">Live Preview</h6>
+                                            <div className="preview-rail">
+                                                <span className="preview-eyebrow">How it will appear</span>
+                                                <div className="preview-course-card">
                                                     <div className="preview-image-wrap">
                                                         {imageStatus === 'ok' && (
                                                             <img
@@ -398,7 +399,7 @@ const AddCourse = () => {
                                                         {imageStatus === 'loading' && (
                                                             <div className="preview-placeholder">
                                                                 <Spinner animation="border" size="sm" />
-                                                                <span>Loading image...</span>
+                                                                <span>Loading image&hellip;</span>
                                                             </div>
                                                         )}
                                                         {imageStatus === 'error' && (
@@ -411,29 +412,30 @@ const AddCourse = () => {
                                                                 <span>Image preview will appear here</span>
                                                             </div>
                                                         )}
+                                                        {form.level && (
+                                                            <span className="preview-level-pill">{form.level}</span>
+                                                        )}
                                                     </div>
 
                                                     <div className="preview-body">
                                                         <div className="preview-title">
                                                             {form.title || 'Course title'}
                                                         </div>
-                                                        <div className="preview-meta">
-                                                            {form.level && (
-                                                                <span className="preview-badge">{form.level}</span>
-                                                            )}
-                                                            {form.duration && (
-                                                                <span className="preview-duration">{form.duration}</span>
-                                                            )}
-                                                        </div>
+                                                        {form.duration && (
+                                                            <div className="preview-duration">{form.duration}</div>
+                                                        )}
                                                         <p className="preview-description">
                                                             {form.description || 'Course description will appear here as you type.'}
                                                         </p>
-                                                        <div className="preview-price">
-                                                            {form.price || 'Price'}
+                                                        <div className="preview-footer">
+                                                            <span className="preview-price">
+                                                                {form.price || 'Price'}
+                                                            </span>
+                                                            <span className="preview-cta">Enroll Now</span>
                                                         </div>
                                                     </div>
-                                                </Card.Body>
-                                            </Card>
+                                                </div>
+                                            </div>
                                         </Col>
                                     </Row>
                                 </Col>
