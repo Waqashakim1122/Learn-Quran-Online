@@ -21,6 +21,89 @@ const COURSE_COLORS = {
     "Tajweed Course": "gold"
 };
 
+/* ================= ICONS ================= */
+
+const IconSearch = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="11" cy="11" r="7" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+);
+
+const IconDownload = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 3v12" />
+        <path d="M7 10l5 5 5-5" />
+        <path d="M5 21h14" />
+    </svg>
+);
+
+const IconPlus = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+);
+
+const IconRefresh = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M23 4v6h-6" />
+        <path d="M1 20v-6h6" />
+        <path d="M3.51 9a9 9 0 0114.13-3.36L23 10M1 14l5.36 4.36A9 9 0 0020.49 15" />
+    </svg>
+);
+
+const IconUsers = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 00-3-3.87" />
+        <path d="M16 3.13a4 4 0 010 7.75" />
+    </svg>
+);
+
+const IconTrending = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+        <polyline points="17 6 23 6 23 12" />
+    </svg>
+);
+
+const IconCheck = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="16 9 11 14 8 11" />
+    </svg>
+);
+
+const IconClock = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+    </svg>
+);
+
+const IconEye = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+        <circle cx="12" cy="12" r="3" />
+    </svg>
+);
+
+const IconEdit = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+        <path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+);
+
+const IconTrash = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <polyline points="3 6 5 6 21 6" />
+        <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+    </svg>
+);
+
 const AdminEnrollments = () => {
 
     const [showSidebar, setShowSidebar] = useState(false);
@@ -80,6 +163,16 @@ const AdminEnrollments = () => {
             setLoading(false);
 
         }
+
+    };
+
+    const resetFilters = () => {
+
+        setSearch("");
+        setCourseFilter("all");
+        setStatusFilter("all");
+        setSortBy("newest");
+        setCurrentPage(1);
 
     };
 
@@ -213,6 +306,15 @@ const AdminEnrollments = () => {
         currentPage
     ]);
 
+    const rangeStart = filteredEnrollments.length === 0
+        ? 0
+        : (currentPage - 1) * PAGE_SIZE + 1;
+
+    const rangeEnd = Math.min(
+        currentPage * PAGE_SIZE,
+        filteredEnrollments.length
+    );
+
     const getInitials = (name) => {
 
         if (!name) return "?";
@@ -251,19 +353,21 @@ const AdminEnrollments = () => {
                 (1000 * 60 * 60 * 24)
         );
 
-        if (days === 0) return "Today";
+        if (days <= 0) return "Today";
 
         if (days === 1) return "Yesterday";
 
         if (days < 7)
-            return `${days} days ago`;
+            return `${days}d ago`;
 
         if (days < 30)
-            return `${Math.floor(days / 7)} weeks ago`;
+            return `${Math.floor(days / 7)}w ago`;
 
-        return `${Math.floor(days / 30)} months ago`;
+        return `${Math.floor(days / 30)}mo ago`;
 
-    };    return (
+    };
+
+    return (
         <div className="enr-page">
 
             <AdminNavbar
@@ -294,20 +398,32 @@ const AdminEnrollments = () => {
                         <div>
 
                             <h1>
-                                Student Enrollments
+                                Enrollments
                             </h1>
 
                             <p>
-                                Manage and monitor all student enrollments.
+                                Manage all student enrollments and requests
                             </p>
 
                         </div>
 
-                        <button className="enr-export-btn">
+                        <div className="enr-header-actions">
 
-                            Export CSV
+                            <button className="enr-export-btn">
 
-                        </button>
+                                <IconDownload />
+                                Export CSV
+
+                            </button>
+
+                            <button className="enr-add-btn">
+
+                                <IconPlus />
+                                Add Student
+
+                            </button>
+
+                        </div>
 
                     </div>
 
@@ -317,41 +433,81 @@ const AdminEnrollments = () => {
 
                         <div className="enr-stat-card">
 
-                            <span>Total Enrollments</span>
+                            <div className="enr-stat-icon green">
+                                <IconUsers />
+                            </div>
 
-                            <h2>
-                                {statistics.total}
-                            </h2>
+                            <div>
 
-                        </div>
+                                <span>Total Enrollments</span>
 
-                        <div className="enr-stat-card">
+                                <h2>
+                                    {statistics.total}
+                                </h2>
 
-                            <span>This Week</span>
+                                <div className="enr-stat-sub">All time</div>
 
-                            <h2>
-                                {statistics.thisWeek}
-                            </h2>
-
-                        </div>
-
-                        <div className="enr-stat-card">
-
-                            <span>Active</span>
-
-                            <h2>
-                                {statistics.active}
-                            </h2>
+                            </div>
 
                         </div>
 
                         <div className="enr-stat-card">
 
-                            <span>Pending</span>
+                            <div className="enr-stat-icon blue">
+                                <IconTrending />
+                            </div>
 
-                            <h2>
-                                {statistics.pending}
-                            </h2>
+                            <div>
+
+                                <span>New This Week</span>
+
+                                <h2>
+                                    {statistics.thisWeek}
+                                </h2>
+
+                                <div className="enr-stat-sub">Last 7 days</div>
+
+                            </div>
+
+                        </div>
+
+                        <div className="enr-stat-card">
+
+                            <div className="enr-stat-icon green">
+                                <IconCheck />
+                            </div>
+
+                            <div>
+
+                                <span>Active Students</span>
+
+                                <h2>
+                                    {statistics.active}
+                                </h2>
+
+                                <div className="enr-stat-sub">Currently active</div>
+
+                            </div>
+
+                        </div>
+
+                        <div className="enr-stat-card">
+
+                            <div className="enr-stat-icon orange">
+                                <IconClock />
+                            </div>
+
+                            <div>
+
+                                <span>Pending Requests</span>
+
+                                <h2>
+                                    {statistics.pending}
+                                </h2>
+
+                                <div className="enr-stat-sub">Awaiting approval</div>
+
+                            </div>
 
                         </div>
 
@@ -361,21 +517,29 @@ const AdminEnrollments = () => {
 
                     <div className="enr-toolbar">
 
-                        <input
-                            type="text"
-                            placeholder="Search student..."
-                            value={search}
-                            onChange={(e) =>
-                                setSearch(e.target.value)
-                            }
-                            className="enr-search"
-                        />
+                        <div className="enr-search-wrap">
+
+                            <IconSearch />
+
+                            <input
+                                type="text"
+                                placeholder="Search by name, email or course..."
+                                value={search}
+                                onChange={(e) => {
+                                    setSearch(e.target.value);
+                                    setCurrentPage(1);
+                                }}
+                                className="enr-search"
+                            />
+
+                        </div>
 
                         <select
                             value={courseFilter}
-                            onChange={(e) =>
-                                setCourseFilter(e.target.value)
-                            }
+                            onChange={(e) => {
+                                setCourseFilter(e.target.value);
+                                setCurrentPage(1);
+                            }}
                         >
 
                             <option value="all">
@@ -399,13 +563,14 @@ const AdminEnrollments = () => {
 
                         <select
                             value={statusFilter}
-                            onChange={(e) =>
-                                setStatusFilter(e.target.value)
-                            }
+                            onChange={(e) => {
+                                setStatusFilter(e.target.value);
+                                setCurrentPage(1);
+                            }}
                         >
 
                             <option value="all">
-                                All Status
+                                All Statuses
                             </option>
 
                             <option value="Active">
@@ -434,14 +599,24 @@ const AdminEnrollments = () => {
                         >
 
                             <option value="newest">
-                                Newest
+                                Newest First
                             </option>
 
                             <option value="oldest">
-                                Oldest
+                                Oldest First
                             </option>
 
                         </select>
+
+                        <button
+                            className="enr-reset-btn"
+                            onClick={resetFilters}
+                        >
+
+                            <IconRefresh />
+                            Reset
+
+                        </button>
 
                     </div>
 
@@ -465,7 +640,19 @@ const AdminEnrollments = () => {
 
                             </div>
 
+                        ) : filteredEnrollments.length === 0 ? (
+
+                            <div className="enr-empty">
+
+                                <h3>No enrollments found</h3>
+
+                                <p>Try adjusting your search or filters.</p>
+
+                            </div>
+
                         ) : (
+
+                            <>
 
                             <div className="enr-table-wrapper">
 
@@ -485,9 +672,9 @@ const AdminEnrollments = () => {
 
                                             <th>Status</th>
 
-                                            <th>Date</th>
+                                            <th>Enrolled</th>
 
-                                            <th>Action</th>
+                                            <th>Actions</th>
 
                                         </tr>
 
@@ -503,7 +690,7 @@ const AdminEnrollments = () => {
 
                                                     <div className="enr-student">
 
-                                                        <div className="enr-avatar">
+                                                        <div className={`enr-avatar ${student.student_name ? "" : "unknown"}`}>
 
                                                             {getInitials(student.student_name)}
 
@@ -513,15 +700,9 @@ const AdminEnrollments = () => {
 
                                                             <h4>
 
-                                                                {student.student_name}
+                                                                {student.student_name || "Unnamed Student"}
 
                                                             </h4>
-
-                                                            <span>
-
-                                                                {formatRelative(student.created_at)}
-
-                                                            </span>
 
                                                         </div>
 
@@ -531,13 +712,13 @@ const AdminEnrollments = () => {
 
                                                 <td>
 
-                                                    {student.email}
+                                                    {student.email || "—"}
 
                                                 </td>
 
                                                 <td>
 
-                                                    {student.phone}
+                                                    {student.phone || "—"}
 
                                                 </td>
 
@@ -567,7 +748,13 @@ const AdminEnrollments = () => {
 
                                                 <td>
 
-                                                    {formatDate(student.created_at)}
+                                                    <div className="enr-date">
+
+                                                        <h5>{formatDate(student.created_at)}</h5>
+
+                                                        <span>{formatRelative(student.created_at)}</span>
+
+                                                    </div>
 
                                                 </td>
 
@@ -575,22 +762,16 @@ const AdminEnrollments = () => {
 
                                                     <div className="enr-actions">
 
-                                                        <button>
-
-                                                            View
-
+                                                        <button className="view" title="View">
+                                                            <IconEye />
                                                         </button>
 
-                                                        <button>
-
-                                                            Edit
-
+                                                        <button className="edit" title="Edit">
+                                                            <IconEdit />
                                                         </button>
 
-                                                        <button className="danger">
-
-                                                            Delete
-
+                                                        <button className="danger" title="Delete">
+                                                            <IconTrash />
                                                         </button>
 
                                                     </div>
@@ -607,6 +788,59 @@ const AdminEnrollments = () => {
 
                             </div>
 
+                            <div className="enr-pagination">
+
+                                <div className="enr-pagination-info">
+
+                                    Showing {rangeStart} to {rangeEnd} of {filteredEnrollments.length} results
+
+                                </div>
+
+                                <div className="enr-pagination-controls">
+
+                                    <button
+                                        disabled={currentPage === 1}
+                                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                    >
+                                        Previous
+                                    </button>
+
+                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+
+                                        <button
+                                            key={page}
+                                            className={page === currentPage ? "active" : ""}
+                                            onClick={() => setCurrentPage(page)}
+                                        >
+                                            {page}
+                                        </button>
+
+                                    ))}
+
+                                    <button
+                                        disabled={currentPage === totalPages}
+                                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                    >
+                                        Next
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                            </>
+
                         )}
 
                     </div>
+
+                </main>
+
+            </div>
+
+        </div>
+    );
+
+};
+
+export default AdminEnrollments;
