@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Form, Button, Card, Alert, Spinner, InputGroup } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Card, Alert, Spinner } from 'react-bootstrap';
 import AdminSidebar from '../Sidebar/Sidebar';
 import AdminNavbar from '../AdminNavebar/Adminnavbar';
 import supabase from '../../../lib/supabaseClient';
@@ -216,148 +216,162 @@ const AddCourse = () => {
                                             <Card className="add-course-card">
                                                 <Card.Body>
                                                     <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                                                        <Form.Group className="mb-3" controlId="courseTitle">
-                                                            <Form.Label>
-                                                                Course Title <span className="required-mark">*</span>
-                                                            </Form.Label>
-                                                            <Form.Control
-                                                                ref={firstFieldRef}
-                                                                type="text"
-                                                                name="title"
-                                                                placeholder="e.g. Quran Nazra"
-                                                                value={form.title}
-                                                                onChange={handleChange}
-                                                                onBlur={handleBlur}
-                                                                maxLength={LIMITS.title}
-                                                                {...fieldState('title')}
-                                                            />
-                                                            <div className="field-footer">
-                                                                <Form.Control.Feedback type="invalid">
-                                                                    {errors.title}
-                                                                </Form.Control.Feedback>
-                                                                <span className="char-count">
-                                                                    {form.title.length}/{LIMITS.title}
-                                                                </span>
-                                                            </div>
-                                                        </Form.Group>
 
-                                                        <Form.Group className="mb-3" controlId="courseDescription">
-                                                            <Form.Label>
-                                                                Course Description <span className="required-mark">*</span>
-                                                            </Form.Label>
-                                                            <Form.Control
-                                                                as="textarea"
-                                                                rows={4}
-                                                                name="description"
-                                                                placeholder="Describe what students will learn in this course"
-                                                                value={form.description}
-                                                                onChange={handleChange}
-                                                                onBlur={handleBlur}
-                                                                maxLength={LIMITS.description}
-                                                                {...fieldState('description')}
-                                                            />
-                                                            <div className="field-footer">
-                                                                <Form.Control.Feedback type="invalid">
-                                                                    {errors.description}
-                                                                </Form.Control.Feedback>
-                                                                <span className="char-count">
-                                                                    {form.description.length}/{LIMITS.description}
-                                                                </span>
-                                                            </div>
-                                                        </Form.Group>
+                                                        <fieldset className="form-section">
+                                                            <legend className="form-section-title">Course Details</legend>
 
-                                                        <Form.Group className="mb-3" controlId="courseImageURL">
-                                                            <Form.Label>
-                                                                Course Image URL <span className="required-mark">*</span>
-                                                            </Form.Label>
-                                                            <Form.Control
-                                                                type="text"
-                                                                name="imageURL"
-                                                                placeholder="e.g. https://images.unsplash.com/..."
-                                                                value={form.imageURL}
-                                                                onChange={handleChange}
-                                                                onBlur={handleBlur}
-                                                                {...fieldState('imageURL')}
-                                                            />
-                                                            <Form.Control.Feedback type="invalid">
-                                                                {errors.imageURL}
-                                                            </Form.Control.Feedback>
-                                                        </Form.Group>
-
-                                                        <Row>
-                                                            <Col sm={6}>
-                                                                <Form.Group className="mb-3" controlId="courseDuration">
-                                                                    <Form.Label>
-                                                                        Duration <span className="required-mark">*</span>
-                                                                    </Form.Label>
-                                                                    <Form.Control
-                                                                        type="text"
-                                                                        name="duration"
-                                                                        placeholder="e.g. 3 Months"
-                                                                        value={form.duration}
-                                                                        onChange={handleChange}
-                                                                        onBlur={handleBlur}
-                                                                        {...fieldState('duration')}
-                                                                    />
-                                                                    <Form.Control.Feedback type="invalid">
-                                                                        {errors.duration}
-                                                                    </Form.Control.Feedback>
-                                                                </Form.Group>
-                                                            </Col>
-                                                            <Col sm={6}>
-                                                                <Form.Group className="mb-3" controlId="courseLevel">
-                                                                    <Form.Label>
-                                                                        Level <span className="required-mark">*</span>
-                                                                    </Form.Label>
-                                                                    <Form.Select
-                                                                        name="level"
-                                                                        value={form.level}
-                                                                        onChange={handleChange}
-                                                                        onBlur={handleBlur}
-                                                                        {...fieldState('level')}
-                                                                    >
-                                                                        <option value="">Select Level</option>
-                                                                        {LEVEL_OPTIONS.map((lvl) => (
-                                                                            <option key={lvl} value={lvl}>{lvl}</option>
-                                                                        ))}
-                                                                    </Form.Select>
-                                                                    <Form.Control.Feedback type="invalid">
-                                                                        {errors.level}
-                                                                    </Form.Control.Feedback>
-                                                                </Form.Group>
-                                                            </Col>
-                                                        </Row>
-
-                                                        <Form.Group className="mb-4" controlId="coursePrice">
-                                                            <Form.Label>
-                                                                Price <span className="required-mark">*</span>
-                                                            </Form.Label>
-                                                            <InputGroup>
+                                                            <Form.Group className="mb-3" controlId="courseTitle">
+                                                                <Form.Label>
+                                                                    Course Title <span className="required-mark">*</span>
+                                                                </Form.Label>
                                                                 <Form.Control
+                                                                    ref={firstFieldRef}
                                                                     type="text"
-                                                                    name="price"
-                                                                    placeholder="e.g. $20/month"
-                                                                    value={form.price}
+                                                                    name="title"
+                                                                    placeholder="e.g. Quran Nazra"
+                                                                    value={form.title}
                                                                     onChange={handleChange}
                                                                     onBlur={handleBlur}
-                                                                    {...fieldState('price')}
+                                                                    maxLength={LIMITS.title}
+                                                                    {...fieldState('title')}
+                                                                />
+                                                                <div className="field-footer">
+                                                                    <Form.Control.Feedback type="invalid">
+                                                                        {errors.title}
+                                                                    </Form.Control.Feedback>
+                                                                    <span className="char-count">
+                                                                        {form.title.length}/{LIMITS.title}
+                                                                    </span>
+                                                                </div>
+                                                            </Form.Group>
+
+                                                            <Form.Group controlId="courseDescription">
+                                                                <Form.Label>
+                                                                    Course Description <span className="required-mark">*</span>
+                                                                </Form.Label>
+                                                                <Form.Control
+                                                                    as="textarea"
+                                                                    rows={4}
+                                                                    name="description"
+                                                                    placeholder="Describe what students will learn in this course"
+                                                                    value={form.description}
+                                                                    onChange={handleChange}
+                                                                    onBlur={handleBlur}
+                                                                    maxLength={LIMITS.description}
+                                                                    {...fieldState('description')}
+                                                                />
+                                                                <div className="field-footer">
+                                                                    <Form.Control.Feedback type="invalid">
+                                                                        {errors.description}
+                                                                    </Form.Control.Feedback>
+                                                                    <span className="char-count">
+                                                                        {form.description.length}/{LIMITS.description}
+                                                                    </span>
+                                                                </div>
+                                                            </Form.Group>
+                                                        </fieldset>
+
+                                                        <fieldset className="form-section">
+                                                            <legend className="form-section-title">Media</legend>
+
+                                                            <Form.Group controlId="courseImageURL">
+                                                                <Form.Label>
+                                                                    Course Image URL <span className="required-mark">*</span>
+                                                                </Form.Label>
+                                                                <Form.Control
+                                                                    type="text"
+                                                                    name="imageURL"
+                                                                    placeholder="e.g. https://images.unsplash.com/..."
+                                                                    value={form.imageURL}
+                                                                    onChange={handleChange}
+                                                                    onBlur={handleBlur}
+                                                                    {...fieldState('imageURL')}
                                                                 />
                                                                 <Form.Control.Feedback type="invalid">
-                                                                    {errors.price}
+                                                                    {errors.imageURL}
                                                                 </Form.Control.Feedback>
-                                                            </InputGroup>
-                                                        </Form.Group>
+                                                                <Form.Text className="field-hint">
+                                                                    Paste a direct image link. It updates the preview on the right as you type.
+                                                                </Form.Text>
+                                                            </Form.Group>
+                                                        </fieldset>
+
+                                                        <fieldset className="form-section form-section--last">
+                                                            <legend className="form-section-title">Scheduling &amp; Pricing</legend>
+
+                                                            <Row className="g-3">
+                                                                <Col sm={4}>
+                                                                    <Form.Group controlId="courseDuration">
+                                                                        <Form.Label>
+                                                                            Duration <span className="required-mark">*</span>
+                                                                        </Form.Label>
+                                                                        <Form.Control
+                                                                            type="text"
+                                                                            name="duration"
+                                                                            placeholder="e.g. 3 Months"
+                                                                            value={form.duration}
+                                                                            onChange={handleChange}
+                                                                            onBlur={handleBlur}
+                                                                            {...fieldState('duration')}
+                                                                        />
+                                                                        <Form.Control.Feedback type="invalid">
+                                                                            {errors.duration}
+                                                                        </Form.Control.Feedback>
+                                                                    </Form.Group>
+                                                                </Col>
+                                                                <Col sm={4}>
+                                                                    <Form.Group controlId="courseLevel">
+                                                                        <Form.Label>
+                                                                            Level <span className="required-mark">*</span>
+                                                                        </Form.Label>
+                                                                        <Form.Select
+                                                                            name="level"
+                                                                            value={form.level}
+                                                                            onChange={handleChange}
+                                                                            onBlur={handleBlur}
+                                                                            {...fieldState('level')}
+                                                                        >
+                                                                            <option value="">Select Level</option>
+                                                                            {LEVEL_OPTIONS.map((lvl) => (
+                                                                                <option key={lvl} value={lvl}>{lvl}</option>
+                                                                            ))}
+                                                                        </Form.Select>
+                                                                        <Form.Control.Feedback type="invalid">
+                                                                            {errors.level}
+                                                                        </Form.Control.Feedback>
+                                                                    </Form.Group>
+                                                                </Col>
+                                                                <Col sm={4}>
+                                                                    <Form.Group controlId="coursePrice">
+                                                                        <Form.Label>
+                                                                            Price <span className="required-mark">*</span>
+                                                                        </Form.Label>
+                                                                        <Form.Control
+                                                                            type="text"
+                                                                            name="price"
+                                                                            placeholder="e.g. $20/month"
+                                                                            value={form.price}
+                                                                            onChange={handleChange}
+                                                                            onBlur={handleBlur}
+                                                                            {...fieldState('price')}
+                                                                        />
+                                                                        <Form.Control.Feedback type="invalid">
+                                                                            {errors.price}
+                                                                        </Form.Control.Feedback>
+                                                                    </Form.Group>
+                                                                </Col>
+                                                            </Row>
+                                                        </fieldset>
 
                                                         <div className="add-course-actions">
-                                                            <Button
+                                                            <button
                                                                 type="button"
-                                                                variant="outline-secondary"
-                                                                className="add-course-clear-btn"
+                                                                className="add-course-clear-link"
                                                                 onClick={resetForm}
                                                                 disabled={loading}
                                                             >
-                                                                Clear Form
-                                                            </Button>
+                                                                Clear form
+                                                            </button>
                                                             <Button
                                                                 variant="primary"
                                                                 type="submit"
@@ -374,9 +388,14 @@ const AddCourse = () => {
                                                                             aria-hidden="true"
                                                                             className="me-2"
                                                                         />
-                                                                        Adding Course...
+                                                                        Adding Course&hellip;
                                                                     </>
-                                                                ) : 'Add Course'}
+                                                                ) : (
+                                                                    <>
+                                                                        <span className="add-course-submit-icon" aria-hidden="true">+</span>
+                                                                        Add Course
+                                                                    </>
+                                                                )}
                                                             </Button>
                                                         </div>
                                                     </Form>
