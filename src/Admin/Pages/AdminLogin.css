@@ -79,7 +79,8 @@ what the portal is for.
 .al-brand-panel{
     position:relative;
     display:flex;
-    align-items:flex-start;
+    align-items:center;
+    justify-content:center;
     overflow:hidden;
     padding:48px;
     background-image:url('../../assetes/login img.jpg');
@@ -89,33 +90,36 @@ what the portal is for.
 }
 
 /* Lightened considerably so the artwork actually reads —
-   just enough of a scrim near the top-left to keep the
-   logo legible against busy parts of the image. */
+   just a soft vignette so the centered logo + verse stay
+   legible against any part of the image. */
 .al-brand-scrim{
     position:absolute;
     inset:0;
-    background:linear-gradient(180deg,
-        rgba(15, 42, 32, 0.30) 0%,
-        rgba(15, 42, 32, 0.12) 30%,
-        rgba(11, 26, 20, 0.05) 60%,
-        rgba(11, 26, 20, 0.18) 100%
-    );
+    background:
+        radial-gradient(120% 90% at 50% 50%, rgba(11,26,20,0.10) 0%, rgba(11,26,20,0.32) 100%),
+        linear-gradient(180deg, rgba(15,42,32,0.22) 0%, rgba(15,42,32,0.02) 25%, rgba(15,42,32,0.02) 75%, rgba(11,26,20,0.28) 100%);
 }
 
 .al-brand-content{
     position:relative;
     z-index:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    max-width:360px;
 }
 
 .al-brand-logo{
-    font-size:22px;
+    font-size:24px;
     font-weight:700;
     letter-spacing:-.01em;
     display:flex;
     flex-direction:column;
+    align-items:center;
     gap:6px;
     color:#fff;
-    text-shadow:0 2px 10px rgba(0,0,0,.35);
+    text-shadow:0 2px 10px rgba(0,0,0,.4);
 }
 
 .al-brand-logo-word{
@@ -131,6 +135,29 @@ what the portal is for.
     font-weight:700;
     letter-spacing:.18em;
     color:rgba(255,255,255,.75);
+}
+
+.al-brand-verse{
+    margin-top:28px;
+    padding-top:24px;
+    border-top:1px solid rgba(255,255,255,.22);
+}
+
+.al-brand-verse-ar{
+    font-family:'Playfair Display', serif;
+    font-size:19px;
+    line-height:1.7;
+    color:#fff;
+    text-shadow:0 2px 10px rgba(0,0,0,.4);
+    margin-bottom:8px;
+    direction:rtl;
+}
+
+.al-brand-verse-en{
+    font-size:12.5px;
+    font-style:italic;
+    color:var(--brand-gold);
+    letter-spacing:.01em;
 }
 
 @media(max-width:900px){
