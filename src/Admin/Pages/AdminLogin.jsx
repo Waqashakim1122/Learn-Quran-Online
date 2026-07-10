@@ -206,6 +206,11 @@ const AdminLogin = () => {
                         <div className="al-brand-logo-word">Learning Qur<span>a</span>n</div>
                         <small>ONLINE</small>
                     </div>
+
+                    <div className="al-brand-verse">
+                        <p className="al-brand-verse-ar">اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ</p>
+                        <p className="al-brand-verse-en">&ldquo;Read in the name of your Lord who created&rdquo; &mdash; Surah Al-Alaq 96:1</p>
+                    </div>
                 </div>
             </div>
 
