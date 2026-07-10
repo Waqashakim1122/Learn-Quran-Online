@@ -108,7 +108,11 @@ BRAND PANEL
     margin-bottom:40px;
     display:flex;
     flex-direction:column;
-    gap:2px;
+    gap:6px;
+}
+
+.al-brand-logo-word{
+    white-space:nowrap;
 }
 
 .al-brand-logo span{
@@ -233,6 +237,11 @@ FIELDS
     font-size:13.5px;
     color:var(--primary);
     margin-bottom:6px;
+}
+
+.al-required{
+    color:var(--danger);
+    margin-left:2px;
 }
 
 .al-input-wrap{
