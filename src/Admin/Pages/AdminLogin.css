@@ -1,68 +1,372 @@
-.admin-login-container {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f7f7f7;
-    margin-top: 10px;
+/* ==========================================================
+   ADMIN LOGIN
+   Same token system as Dashboard / Enrollments / AddCourse /
+   Contact Messages, plus a branded split panel for this one
+   public-facing entry point.
+========================================================== */
+
+:root{
+
+    --primary:#1E293B;
+    --secondary:#64748B;
+    --muted:#94A3B8;
+
+    --background:#F8FAFC;
+    --card:#FFFFFF;
+
+    --border:#E2E8F0;
+    --border-strong:#CBD5E1;
+
+    --hover:#F1F5F9;
+
+    --danger:#DC2626;
+    --danger-bg:#FEE2E2;
+    --danger-fg:#DC2626;
+
+    --info:#2563EB;
+    --info-bg:#DBEAFE;
+
+    --shadow-sm:0 1px 2px rgba(15,23,42,.04);
+    --shadow:0 2px 12px rgba(15,23,42,.06);
+    --shadow-md:0 8px 24px rgba(15,23,42,.08);
+    --shadow-lg:0 24px 60px rgba(15,23,42,.16);
+
+    --radius-sm:6px;
+    --radius:8px;
+    --radius-lg:12px;
+    --radius-pill:999px;
+
+    --ease:cubic-bezier(.4,0,.2,1);
+    --dur-fast:.15s;
+    --dur:.2s;
+
+    /* Brand colors, shared with the sidebar nav */
+    --brand-green:#1B4332;
+    --brand-green-deep:#0F2A20;
+    --brand-gold:#C9A227;
+
 }
 
-.admin-login-container .bg-light {
-    background-color: #f8f9fa !important;
+.al-page{
+    min-height:100vh;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    font-family:Inter,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    background:var(--background);
 }
 
-.admin-login-container .card {
-    border-radius: 15px;
-    transition: transform 0.2s ease-in-out;
+.al-page :is(button, input, a):focus-visible{
+    outline:2px solid var(--info);
+    outline-offset:2px;
+    border-radius:var(--radius-sm);
 }
 
-.admin-login-container .card:hover {
-    transform: scale(1.05);
+/* ======================================
+BRAND PANEL
+====================================== */
+
+.al-brand-panel{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(160deg, var(--brand-green) 0%, var(--brand-green-deep) 100%);
+    overflow:hidden;
+    padding:48px;
 }
 
-.admin-login-container .card-body {
-    padding: 2rem;
+.al-brand-pattern{
+    position:absolute;
+    inset:0;
+    opacity:.10;
+    background-image:
+        linear-gradient(135deg, var(--brand-gold) 25%, transparent 25%),
+        linear-gradient(225deg, var(--brand-gold) 25%, transparent 25%),
+        linear-gradient(45deg, var(--brand-gold) 25%, transparent 25%),
+        linear-gradient(315deg, var(--brand-gold) 25%, transparent 25%);
+    background-position:40px 0, 40px 0, 0 0, 0 0;
+    background-size:80px 80px;
+    background-repeat:repeat;
 }
 
-.admin-login-container .text-primary {
-    color: #007bff !important;
+.al-brand-content{
+    position:relative;
+    z-index:1;
+    max-width:420px;
+    color:#fff;
 }
 
-.admin-login-container .form-control {
-    border-radius: 30px;
-    padding: 10px 15px;
+.al-brand-logo{
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:-.01em;
+    margin-bottom:40px;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
 }
 
-.admin-login-container .btn-primary {
-    background-color: #007bff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 30px;
-    font-size: 1.2rem;
-    transition: background-color 0.3s ease;
+.al-brand-logo span{
+    color:var(--brand-gold);
 }
 
-.admin-login-container .btn-primary:hover {
-    background-color: #0056b3;
+.al-brand-logo small{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.18em;
+    color:rgba(255,255,255,.65);
 }
 
-.admin-login-container .login-image {
-    background: url('../../assetes/login\ img.jpg') no-repeat center center;
-    background-size: cover;
-    height: 100%;
-    border-radius: 15px 0 0 15px;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-    filter: brightness(0.7);
+.al-brand-content h2{
+    font-size:32px;
+    font-weight:700;
+    letter-spacing:-.02em;
+    margin-bottom:14px;
 }
 
-.admin-login-container .toggle-password-btn {
-    border-radius: 0 30px 30px 0;
-    padding: 10px 15px;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
+.al-brand-content p{
+    font-size:15px;
+    line-height:1.6;
+    color:rgba(255,255,255,.78);
 }
 
-.admin-login-container .toggle-password-btn:hover {
-    background-color: #e9ecef;
+@media(max-width:900px){
+    .al-page{
+        grid-template-columns:1fr;
+    }
+    .al-brand-panel{
+        display:none;
+    }
+}
+
+/* ======================================
+FORM PANEL
+====================================== */
+
+.al-form-panel{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px;
+}
+
+.al-form-card{
+    width:100%;
+    max-width:400px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-lg);
+    padding:40px 36px;
+}
+
+.al-badge{
+    display:inline-flex;
+    align-items:center;
+    padding:4px 12px;
+    border-radius:var(--radius-pill);
+    background:var(--info-bg);
+    color:#1D4ED8;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.06em;
+    margin-bottom:18px;
+}
+
+.al-form-card h1{
+    font-size:24px;
+    font-weight:700;
+    letter-spacing:-.02em;
+    color:var(--primary);
+    margin-bottom:6px;
+}
+
+.al-subtitle{
+    color:var(--secondary);
+    font-size:14px;
+    margin-bottom:26px;
+}
+
+/* ======================================
+ALERT
+====================================== */
+
+.al-alert{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 14px;
+    border-radius:var(--radius);
+    background:var(--danger-bg);
+    color:var(--danger-fg);
+    font-size:13.5px;
+    font-weight:500;
+    margin-bottom:20px;
+}
+
+.al-alert svg{
+    flex-shrink:0;
+}
+
+/* ======================================
+FIELDS
+====================================== */
+
+.al-field{
+    margin-bottom:18px;
+}
+
+.al-field label{
+    display:block;
+    font-weight:600;
+    font-size:13.5px;
+    color:var(--primary);
+    margin-bottom:6px;
+}
+
+.al-input-wrap{
+    position:relative;
+    display:flex;
+    align-items:center;
+}
+
+.al-input-icon{
+    position:absolute;
+    left:14px;
+    color:var(--muted);
+    pointer-events:none;
+    display:flex;
+}
+
+.al-input-wrap input{
+    width:100%;
+    padding:11px 14px 11px 42px;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    outline:none;
+    font-size:14px;
+    font-family:inherit;
+    color:var(--primary);
+    background:var(--background);
+    transition:border-color var(--dur) var(--ease), background var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.al-input-wrap input::placeholder{
+    color:var(--muted);
+}
+
+.al-input-wrap input:focus{
+    border-color:var(--info);
+    background:#fff;
+    box-shadow:0 0 0 3px rgba(37,99,235,.1);
+}
+
+.al-eye-btn{
+    position:absolute;
+    right:6px;
+    background:none;
+    border:none;
+    color:var(--muted);
+    padding:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    border-radius:var(--radius-sm);
+    transition:color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+
+.al-eye-btn:hover{
+    color:var(--primary);
+    background:var(--hover);
+}
+
+/* ======================================
+SUBMIT
+====================================== */
+
+.al-submit-btn{
+    width:100%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    border:none;
+    background:var(--brand-green);
+    color:#fff;
+    padding:12px 20px;
+    border-radius:var(--radius);
+    cursor:pointer;
+    font-weight:600;
+    font-size:14.5px;
+    margin-top:6px;
+    box-shadow:var(--shadow-sm);
+    transition:background var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur-fast) var(--ease);
+}
+
+.al-submit-btn:hover:not(:disabled){
+    background:var(--brand-green-deep);
+    box-shadow:var(--shadow);
+}
+
+.al-submit-btn:active:not(:disabled){
+    transform:scale(.98);
+}
+
+.al-submit-btn:disabled{
+    background:var(--border-strong);
+    cursor:not-allowed;
+    box-shadow:none;
+}
+
+@keyframes al-spin{
+    to{ transform:rotate(360deg); }
+}
+
+.al-spin{
+    animation:al-spin .7s linear infinite;
+}
+
+/* ======================================
+BACK LINK
+====================================== */
+
+.al-back-link{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    margin-top:22px;
+    color:var(--secondary);
+    font-size:13.5px;
+    font-weight:600;
+    text-decoration:none;
+}
+
+.al-back-link:hover{
+    color:var(--primary);
+    text-decoration:underline;
+}
+
+/* ======================================
+RESPONSIVE
+====================================== */
+
+@media(max-width:480px){
+    .al-form-card{
+        padding:32px 24px;
+        box-shadow:none;
+        border:none;
+    }
+    .al-form-panel{
+        padding:20px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .al-page *{
+        animation-duration:0.001ms !important;
+        transition-duration:0.001ms !important;
+    }
 }
