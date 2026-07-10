@@ -13,7 +13,7 @@ import CourseList from './Admin/Pages/CourseList';
 import AdminContactSubmissions from './Admin/Pages/AdminContactSubmissions';
 import UserCourseList from './Pages/UserCourseList';
 import AdminLogin from './Admin/Pages/AdminLogin';
-import AdminStats from './Admin/MyComponents/AdminStats/AdminStats';
+
 
 const App = () => {
   return (
@@ -29,7 +29,7 @@ const App = () => {
         <Route path="addCourse" element={<PrivateRoute element={AddCourse} />} />
         <Route path="courselist" element={<PrivateRoute element={CourseList} />} />
         <Route path="contact-submissions" element={<PrivateRoute element={AdminContactSubmissions} />} />
-        <Route path="adminstats" element={<PrivateRoute element={AdminStats} />} />
+       
       </Routes>
     </AuthProvider>
   );
