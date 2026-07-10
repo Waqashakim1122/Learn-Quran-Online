@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import AdminSidebar from '../MyComponents/Sidebar/Sidebar';
 import AdminNavbar from '../MyComponents/AdminNavebar/Adminnavbar';
 import supabase from '../../lib/supabaseClient';
-import './ContactSubmissions.css';
+import './AdminContactSubmissions.css';
 
 /* ============================================================
    Constants
