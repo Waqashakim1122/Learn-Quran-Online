@@ -1,324 +1,447 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from './AuthContext';
-import './AdminLogin.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700&display=swap');
 
-/* ================= ICONS ================= */
+/* ==========================================================
+   ADMIN LOGIN
+   Same token system as Dashboard / Enrollments / AddCourse /
+   Contact Messages, plus a branded split panel for this one
+   public-facing entry point.
+========================================================== */
 
-const IconMail = () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <rect x="2" y="4" width="20" height="16" rx="2" />
-        <path d="M2 7l10 6 10-6" />
-    </svg>
-);
+:root{
 
-const IconLock = () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <rect x="3" y="11" width="18" height="11" rx="2" />
-        <path d="M7 11V7a5 5 0 0110 0v4" />
-    </svg>
-);
+    --primary:#1E293B;
+    --secondary:#64748B;
+    --muted:#94A3B8;
 
-const IconEye = () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-        <circle cx="12" cy="12" r="3" />
-    </svg>
-);
+    --background:#F8FAFC;
+    --card:#FFFFFF;
 
-const IconEyeOff = () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a20.3 20.3 0 015.06-6.06M9.9 4.24A10.4 10.4 0 0112 4c7 0 11 8 11 8a20.5 20.5 0 01-3.22 4.44M14.12 14.12a3 3 0 11-4.24-4.24" />
-        <line x1="1" y1="1" x2="23" y2="23" />
-    </svg>
-);
+    --border:#E2E8F0;
+    --border-strong:#CBD5E1;
 
-const IconAlertCircle = () => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="12" cy="12" r="10" />
-        <line x1="12" y1="8" x2="12" y2="12" />
-        <line x1="12" y1="16" x2="12.01" y2="16" />
-    </svg>
-);
+    --hover:#F1F5F9;
 
-const IconShield = () => (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-    </svg>
-);
+    --danger:#DC2626;
+    --danger-bg:#FEE2E2;
+    --danger-fg:#DC2626;
 
-const IconSpinner = () => (
-    <svg className="al-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-        <path d="M21 12a9 9 0 11-9-9" strokeLinecap="round" />
-    </svg>
-);
+    --warning-bg:#FEF3C7;
+    --warning-fg:#B45309;
+    --warning-border:#FDE68A;
 
-const IconArrowLeft = () => (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <line x1="19" y1="12" x2="5" y2="12" />
-        <polyline points="12 19 5 12 12 5" />
-    </svg>
-);
+    --info:#2563EB;
+    --info-bg:#DBEAFE;
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    --shadow-sm:0 1px 2px rgba(15,23,42,.04);
+    --shadow:0 2px 12px rgba(15,23,42,.06);
+    --shadow-md:0 8px 24px rgba(15,23,42,.08);
+    --shadow-lg:0 24px 60px rgba(15,23,42,.16);
 
-/* =========================================================
-   Client-side lockout after repeated failed attempts.
-   This is a UX deterrent, NOT a substitute for real
-   brute-force protection — that must also be enforced
-   server-side (e.g. Supabase Auth rate limiting / a
-   captcha on the login RPC). It stops casual guessing
-   and accidental hammering, not a determined attacker
-   with dev tools open.
-========================================================= */
-const LOCKOUT_KEY = 'adminLoginLockout';
-const MAX_ATTEMPTS = 5;
-const LOCK_DURATION_MS = 60 * 1000; // 1 minute
+    --radius-sm:6px;
+    --radius:8px;
+    --radius-lg:12px;
+    --radius-pill:999px;
 
-const readLockoutState = () => {
-    try {
-        const raw = localStorage.getItem(LOCKOUT_KEY);
-        if (!raw) return { attempts: 0, lockUntil: 0 };
-        const parsed = JSON.parse(raw);
-        return {
-            attempts: parsed.attempts || 0,
-            lockUntil: parsed.lockUntil || 0,
-        };
-    } catch {
-        return { attempts: 0, lockUntil: 0 };
-    }
-};
+    --ease:cubic-bezier(.4,0,.2,1);
+    --dur-fast:.15s;
+    --dur:.2s;
 
-const writeLockoutState = (state) => {
-    try {
-        localStorage.setItem(LOCKOUT_KEY, JSON.stringify(state));
-    } catch {
-        /* localStorage unavailable — fail open silently, not a hard requirement */
-    }
-};
+    /* Brand colors, shared with the sidebar nav */
+    --brand-green:#1B4332;
+    --brand-green-deep:#0F2A20;
+    --brand-gold:#C9A227;
 
-const AdminLogin = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [lockUntil, setLockUntil] = useState(0);
-    const [secondsLeft, setSecondsLeft] = useState(0);
-    const navigate = useNavigate();
-    const { login } = useAuth();
-    const emailRef = useRef(null);
+}
 
-    // Restore any active lock on mount (survives refresh)
-    useEffect(() => {
-        const { lockUntil: storedLockUntil } = readLockoutState();
-        if (storedLockUntil > Date.now()) {
-            setLockUntil(storedLockUntil);
-        }
-        emailRef.current?.focus();
-    }, []);
+.al-page{
+    min-height:100vh;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    font-family:Inter,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    background:var(--background);
+}
 
-    // Countdown ticker while locked
-    useEffect(() => {
-        if (!lockUntil) {
-            setSecondsLeft(0);
-            return;
-        }
-        const tick = () => {
-            const remaining = Math.max(0, Math.ceil((lockUntil - Date.now()) / 1000));
-            setSecondsLeft(remaining);
-            if (remaining <= 0) {
-                setLockUntil(0);
-                writeLockoutState({ attempts: 0, lockUntil: 0 });
-            }
-        };
-        tick();
-        const interval = setInterval(tick, 1000);
-        return () => clearInterval(interval);
-    }, [lockUntil]);
+.al-page :is(button, input, a):focus-visible{
+    outline:2px solid var(--info);
+    outline-offset:2px;
+    border-radius:var(--radius-sm);
+}
 
-    const isLocked = lockUntil > Date.now();
+/* ======================================
+BRAND PANEL
+Just the logo now — the photo is the
+message, not a wall of marketing copy.
+An admin arriving here already knows
+what the portal is for.
+====================================== */
 
-    const registerFailedAttempt = () => {
-        const current = readLockoutState();
-        const attempts = current.attempts + 1;
+.al-brand-panel{
+    position:relative;
+    display:flex;
+    align-items:flex-end;
+    justify-content:flex-start;
+    overflow:hidden;
+    padding:0;
+    background-image:url('../../assetes/login img.jpg');
+    background-size:cover;
+    background-position:center;
+    background-color:var(--brand-green-deep); /* shown while the photo loads, and if the path needs adjusting */
+}
 
-        if (attempts >= MAX_ATTEMPTS) {
-            const until = Date.now() + LOCK_DURATION_MS;
-            writeLockoutState({ attempts: 0, lockUntil: until });
-            setLockUntil(until);
-        } else {
-            writeLockoutState({ attempts, lockUntil: 0 });
-        }
-    };
-
-    const clearLockoutState = () => {
-        writeLockoutState({ attempts: 0, lockUntil: 0 });
-    };
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        setError('');
-
-        if (isLocked) {
-            return;
-        }
-
-        const trimmedEmail = email.trim();
-
-        if (!trimmedEmail || !password) {
-            setError('Please enter your email and password.');
-            return;
-        }
-
-        if (!EMAIL_PATTERN.test(trimmedEmail)) {
-            setError('Please enter a valid email address.');
-            return;
-        }
-
-        setLoading(true);
-        try {
-            await login(trimmedEmail, password);
-            clearLockoutState();
-            navigate('/dashboard');
-        } catch (err) {
-            registerFailedAttempt();
-            // Deliberately generic — never confirm whether the email exists.
-            setError('Invalid email or password. Please try again.');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return (
-        <div className="al-page">
-
-            {/* ================= BRAND PANEL =================
-                Just the logo over the photo now. No marketing
-                copy here — an admin arriving at this URL already
-                knows what the portal is for; the copy was only
-                repeating itself. */}
-
-            <div className="al-brand-panel">
-                <div className="al-brand-scrim" aria-hidden="true" />
-                <div className="al-brand-content">
-                    <div className="al-brand-logo">
-                        <div className="al-brand-logo-word">Learning Qur<span>a</span>n</div>
-                        <small>ONLINE</small>
-                    </div>
-
-                    <div className="al-brand-verse">
-                        <p className="al-brand-verse-ar">اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ</p>
-                        <p className="al-brand-verse-en">&ldquo;Read in the name of your Lord who created&rdquo; &mdash; Surah Al-Alaq 96:1</p>
-                    </div>
-                </div>
-            </div>
-
-            {/* ================= FORM PANEL ================= */}
-
-            <div className="al-form-panel">
-                <div className="al-form-card">
-
-                    <span className="al-badge">ADMIN ACCESS</span>
-                    <h1>Welcome back</h1>
-                    <p className="al-subtitle">Sign in to access the admin dashboard.</p>
-
-                    {error && !isLocked && (
-                        <div className="al-alert" role="alert" aria-live="assertive">
-                            <IconAlertCircle />
-                            <span>{error}</span>
-                        </div>
-                    )}
-
-                    {isLocked && (
-                        <div className="al-alert al-alert-warning" role="alert" aria-live="assertive">
-                            <IconAlertCircle />
-                            <span>
-                                Too many failed attempts. Try again in {secondsLeft}s.
-                            </span>
-                        </div>
-                    )}
-
-                    <form onSubmit={handleSubmit} noValidate aria-disabled={isLocked}>
-
-                        <div className="al-field">
-                            <label htmlFor="adminEmail">Email address<span className="al-required" aria-hidden="true">*</span></label>
-                            <div className="al-input-wrap">
-                                <span className="al-input-icon"><IconMail /></span>
-                                <input
-                                    ref={emailRef}
-                                    id="adminEmail"
-                                    type="email"
-                                    placeholder="you@example.com"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    autoComplete="username"
-                                    maxLength={254}
-                                    disabled={loading || isLocked}
-                                    required
-                                />
-                            </div>
-                        </div>
-
-                        <div className="al-field">
-                            <label htmlFor="adminPassword">Password<span className="al-required" aria-hidden="true">*</span></label>
-                            <div className="al-input-wrap">
-                                <span className="al-input-icon"><IconLock /></span>
-                                <input
-                                    id="adminPassword"
-                                    type={showPassword ? 'text' : 'password'}
-                                    placeholder="Enter your password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    autoComplete="current-password"
-                                    maxLength={128}
-                                    disabled={loading || isLocked}
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    className="al-eye-btn"
-                                    onClick={() => setShowPassword((prev) => !prev)}
-                                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                                    disabled={loading || isLocked}
-                                >
-                                    {showPassword ? <IconEyeOff /> : <IconEye />}
-                                </button>
-                            </div>
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="al-submit-btn"
-                            disabled={loading || isLocked}
-                        >
-                            {loading ? (
-                                <>
-                                    <IconSpinner />
-                                    Signing in&hellip;
-                                </>
-                            ) : isLocked ? (
-                                `Locked (${secondsLeft}s)`
-                            ) : 'Sign In'}
-                        </button>
-
-                    </form>
-
-                    <div className="al-security-note">
-                        <IconShield />
-                        <span>This portal is restricted to authorized administrators. Access attempts are logged.</span>
-                    </div>
-
-                    <Link to="/" className="al-back-link">
-                        <IconArrowLeft />
-                        Back to Home
-                    </Link>
-
-                </div>
-            </div>
-
-        </div>
+/* No overlay across the artwork itself — the calligraphy
+   stays completely untouched. A solid gradient band is
+   confined to the bottom, where the logo/verse live, so
+   text never sits on top of the carved script. */
+.al-brand-scrim{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(180deg,
+        rgba(11,26,20,0) 0%,
+        rgba(11,26,20,0) 55%,
+        rgba(11,26,20,0.55) 78%,
+        rgba(8,20,15,0.94) 100%
     );
-};
+}
 
-export default AdminLogin;
+.al-brand-content{
+    position:relative;
+    z-index:1;
+    width:100%;
+    padding:36px 48px 40px;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+.al-brand-logo{
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:-.01em;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    color:#fff;
+}
+
+.al-brand-logo-word{
+    white-space:nowrap;
+}
+
+.al-brand-logo span{
+    color:var(--brand-gold);
+}
+
+.al-brand-logo small{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.18em;
+    color:rgba(255,255,255,.75);
+}
+
+.al-brand-verse{
+    margin-top:20px;
+    padding-top:18px;
+    border-top:1px solid rgba(255,255,255,.18);
+}
+
+.al-brand-verse-ar{
+    font-family:'Playfair Display', serif;
+    font-size:17px;
+    line-height:1.7;
+    color:#fff;
+    margin-bottom:6px;
+    direction:rtl;
+    text-align:right;
+}
+
+.al-brand-verse-en{
+    font-size:12px;
+    font-style:italic;
+    color:rgba(255,255,255,.7);
+    letter-spacing:.01em;
+}
+
+@media(max-width:900px){
+    .al-page{
+        grid-template-columns:1fr;
+    }
+    .al-brand-panel{
+        display:none;
+    }
+}
+
+/* ======================================
+FORM PANEL
+====================================== */
+
+.al-form-panel{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px;
+}
+
+.al-form-card{
+    width:100%;
+    max-width:400px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-lg);
+    padding:40px 36px;
+}
+
+.al-badge{
+    display:inline-flex;
+    align-items:center;
+    padding:4px 12px;
+    border-radius:var(--radius-pill);
+    background:var(--info-bg);
+    color:#1D4ED8;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.06em;
+    margin-bottom:18px;
+}
+
+.al-form-card h1{
+    font-size:24px;
+    font-weight:700;
+    letter-spacing:-.02em;
+    color:var(--primary);
+    margin-bottom:6px;
+}
+
+.al-subtitle{
+    color:var(--secondary);
+    font-size:14px;
+    margin-bottom:26px;
+}
+
+/* ======================================
+ALERT
+====================================== */
+
+.al-alert{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 14px;
+    border-radius:var(--radius);
+    background:var(--danger-bg);
+    color:var(--danger-fg);
+    font-size:13.5px;
+    font-weight:500;
+    margin-bottom:20px;
+}
+
+.al-alert svg{
+    flex-shrink:0;
+}
+
+.al-alert-warning{
+    background:var(--warning-bg);
+    color:var(--warning-fg);
+    border:1px solid var(--warning-border);
+}
+
+/* ======================================
+FIELDS
+====================================== */
+
+.al-field{
+    margin-bottom:18px;
+}
+
+.al-field label{
+    display:block;
+    font-weight:600;
+    font-size:13.5px;
+    color:var(--primary);
+    margin-bottom:6px;
+}
+
+.al-required{
+    color:var(--danger);
+    margin-left:2px;
+}
+
+.al-input-wrap{
+    position:relative;
+    display:flex;
+    align-items:center;
+}
+
+.al-input-icon{
+    position:absolute;
+    left:14px;
+    color:var(--muted);
+    pointer-events:none;
+    display:flex;
+}
+
+.al-input-wrap input{
+    width:100%;
+    padding:11px 14px 11px 42px;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    outline:none;
+    font-size:14px;
+    font-family:inherit;
+    color:var(--primary);
+    background:var(--background);
+    transition:border-color var(--dur) var(--ease), background var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.al-input-wrap input::placeholder{
+    color:var(--muted);
+}
+
+.al-input-wrap input:focus{
+    border-color:var(--info);
+    background:#fff;
+    box-shadow:0 0 0 3px rgba(37,99,235,.1);
+}
+
+.al-input-wrap input:disabled{
+    background:var(--hover);
+    color:var(--muted);
+    cursor:not-allowed;
+}
+
+.al-eye-btn{
+    position:absolute;
+    right:6px;
+    background:none;
+    border:none;
+    color:var(--muted);
+    padding:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    border-radius:var(--radius-sm);
+    transition:color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+
+.al-eye-btn:hover:not(:disabled){
+    color:var(--primary);
+    background:var(--hover);
+}
+
+.al-eye-btn:disabled{
+    color:var(--border-strong);
+    cursor:not-allowed;
+}
+
+/* ======================================
+SUBMIT
+====================================== */
+
+.al-submit-btn{
+    width:100%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    border:none;
+    background:var(--brand-green);
+    color:#fff;
+    padding:12px 20px;
+    border-radius:var(--radius);
+    cursor:pointer;
+    font-weight:600;
+    font-size:14.5px;
+    margin-top:6px;
+    box-shadow:var(--shadow-sm);
+    transition:background var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur-fast) var(--ease);
+}
+
+.al-submit-btn:hover:not(:disabled){
+    background:var(--brand-green-deep);
+    box-shadow:var(--shadow);
+}
+
+.al-submit-btn:active:not(:disabled){
+    transform:scale(.98);
+}
+
+.al-submit-btn:disabled{
+    background:var(--border-strong);
+    cursor:not-allowed;
+    box-shadow:none;
+}
+
+@keyframes al-spin{
+    to{ transform:rotate(360deg); }
+}
+
+.al-spin{
+    animation:al-spin .7s linear infinite;
+}
+
+/* ======================================
+SECURITY NOTE
+====================================== */
+
+.al-security-note{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px solid var(--border);
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.5;
+}
+
+.al-security-note svg{
+    flex-shrink:0;
+    margin-top:2px;
+    color:var(--secondary);
+}
+
+/* ======================================
+BACK LINK
+====================================== */
+
+.al-back-link{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    margin-top:18px;
+    color:var(--secondary);
+    font-size:13.5px;
+    font-weight:600;
+    text-decoration:none;
+}
+
+.al-back-link:hover{
+    color:var(--primary);
+    text-decoration:underline;
+}
+
+/* ======================================
+RESPONSIVE
+====================================== */
+
+@media(max-width:480px){
+    .al-form-card{
+        padding:32px 24px;
+        box-shadow:none;
+        border:none;
+    }
+    .al-form-panel{
+        padding:20px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .al-page *{
+        animation-duration:0.001ms !important;
+        transition-duration:0.001ms !important;
+    }
+}
