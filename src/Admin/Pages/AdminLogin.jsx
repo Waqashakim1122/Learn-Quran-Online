@@ -196,14 +196,33 @@ const AdminLogin = () => {
             {/* ================= BRAND PANEL ================= */}
 
             <div className="al-brand-panel">
-                <div className="al-brand-pattern" aria-hidden="true" />
+                <div className="al-brand-scrim" aria-hidden="true" />
                 <div className="al-brand-content">
                     <div className="al-brand-logo">
                         <div className="al-brand-logo-word">Learning Qur<span>a</span>n</div>
                         <small>ONLINE</small>
                     </div>
-                    <h2>Admin Panel</h2>
-                    <p>Manage courses, enrollments, and student messages from one place.</p>
+
+                    <div className="al-brand-bottom">
+                        <span className="al-brand-eyebrow">ADMIN PORTAL</span>
+                        <h2>Run the academy from one dashboard</h2>
+                        <p>Everything behind Learning Quran Online — courses, enrollments, and student messages — lives here.</p>
+
+                        <ul className="al-brand-features">
+                            <li>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>
+                                Manage courses &amp; content
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+                                Track student enrollments
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="M2 7l10 6 10-6" /></svg>
+                                Respond to inquiries
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
