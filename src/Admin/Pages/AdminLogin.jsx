@@ -141,7 +141,7 @@ const AdminLogin = () => {
 
     const registerFailedAttempt = () => {
         const current = readLockoutState();
-        const attempts = (current.lockUntil > Date.now() ? current.attempts : current.attempts) + 1;
+        const attempts = current.attempts + 1;
 
         if (attempts >= MAX_ATTEMPTS) {
             const until = Date.now() + LOCK_DURATION_MS;
@@ -199,7 +199,7 @@ const AdminLogin = () => {
                 <div className="al-brand-pattern" aria-hidden="true" />
                 <div className="al-brand-content">
                     <div className="al-brand-logo">
-                        Learning Qur<span>a</span>n
+                        <div className="al-brand-logo-word">Learning Qur<span>a</span>n</div>
                         <small>ONLINE</small>
                     </div>
                     <h2>Admin Panel</h2>
@@ -235,7 +235,7 @@ const AdminLogin = () => {
                     <form onSubmit={handleSubmit} noValidate aria-disabled={isLocked}>
 
                         <div className="al-field">
-                            <label htmlFor="adminEmail">Email address</label>
+                            <label htmlFor="adminEmail">Email address<span className="al-required" aria-hidden="true">*</span></label>
                             <div className="al-input-wrap">
                                 <span className="al-input-icon"><IconMail /></span>
                                 <input
@@ -254,7 +254,7 @@ const AdminLogin = () => {
                         </div>
 
                         <div className="al-field">
-                            <label htmlFor="adminPassword">Password</label>
+                            <label htmlFor="adminPassword">Password<span className="al-required" aria-hidden="true">*</span></label>
                             <div className="al-input-wrap">
                                 <span className="al-input-icon"><IconLock /></span>
                                 <input
