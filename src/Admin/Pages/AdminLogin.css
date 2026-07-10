@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700&display=swap');
+
 /* ==========================================================
    ADMIN LOGIN
    Same token system as Dashboard / Enrollments / AddCourse /
@@ -73,32 +75,49 @@ BRAND PANEL
 .al-brand-panel{
     position:relative;
     display:flex;
-    align-items:center;
-    justify-content:center;
-    background:linear-gradient(160deg, var(--brand-green) 0%, var(--brand-green-deep) 100%);
+    flex-direction:column;
+    justify-content:space-between;
     overflow:hidden;
     padding:48px;
+    background-image:url('../../assetes/login img.jpg');
+    background-size:cover;
+    background-position:center;
+    background-color:var(--brand-green-deep); /* shown while the photo loads, and if the path needs adjusting */
 }
 
-.al-brand-pattern{
+.al-brand-scrim{
     position:absolute;
     inset:0;
-    opacity:.10;
-    background-image:
-        linear-gradient(135deg, var(--brand-gold) 25%, transparent 25%),
-        linear-gradient(225deg, var(--brand-gold) 25%, transparent 25%),
-        linear-gradient(45deg, var(--brand-gold) 25%, transparent 25%),
-        linear-gradient(315deg, var(--brand-gold) 25%, transparent 25%);
-    background-position:40px 0, 40px 0, 0 0, 0 0;
-    background-size:80px 80px;
-    background-repeat:repeat;
+    background:linear-gradient(180deg,
+        rgba(15, 42, 32, 0.55) 0%,
+        rgba(15, 42, 32, 0.45) 35%,
+        rgba(11, 26, 20, 0.92) 100%
+    );
 }
 
 .al-brand-content{
     position:relative;
     z-index:1;
-    max-width:420px;
+    max-width:440px;
     color:#fff;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    height:100%;
+}
+
+.al-brand-bottom{
+    margin-top:auto;
+}
+
+.al-brand-eyebrow{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--brand-gold);
+    margin-bottom:14px;
 }
 
 .al-brand-logo{
@@ -127,16 +146,44 @@ BRAND PANEL
 }
 
 .al-brand-content h2{
-    font-size:32px;
+    font-family:'Playfair Display', serif;
+    font-size:30px;
     font-weight:700;
-    letter-spacing:-.02em;
-    margin-bottom:14px;
+    letter-spacing:-.01em;
+    line-height:1.2;
+    margin-bottom:12px;
 }
 
 .al-brand-content p{
-    font-size:15px;
+    font-size:14.5px;
     line-height:1.6;
-    color:rgba(255,255,255,.78);
+    color:rgba(255,255,255,.8);
+    margin-bottom:22px;
+}
+
+.al-brand-features{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.al-brand-features li{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:13.5px;
+    font-weight:500;
+    color:rgba(255,255,255,.92);
+}
+
+.al-brand-features svg{
+    width:16px;
+    height:16px;
+    flex-shrink:0;
+    color:var(--brand-gold);
 }
 
 @media(max-width:900px){
