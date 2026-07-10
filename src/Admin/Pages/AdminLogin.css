@@ -79,47 +79,49 @@ what the portal is for.
 .al-brand-panel{
     position:relative;
     display:flex;
-    align-items:center;
-    justify-content:center;
+    align-items:flex-end;
+    justify-content:flex-start;
     overflow:hidden;
-    padding:48px;
+    padding:0;
     background-image:url('../../assetes/login img.jpg');
     background-size:cover;
     background-position:center;
     background-color:var(--brand-green-deep); /* shown while the photo loads, and if the path needs adjusting */
 }
 
-/* Lightened considerably so the artwork actually reads —
-   just a soft vignette so the centered logo + verse stay
-   legible against any part of the image. */
+/* No overlay across the artwork itself — the calligraphy
+   stays completely untouched. A solid gradient band is
+   confined to the bottom, where the logo/verse live, so
+   text never sits on top of the carved script. */
 .al-brand-scrim{
     position:absolute;
     inset:0;
-    background:
-        radial-gradient(120% 90% at 50% 50%, rgba(11,26,20,0.10) 0%, rgba(11,26,20,0.32) 100%),
-        linear-gradient(180deg, rgba(15,42,32,0.22) 0%, rgba(15,42,32,0.02) 25%, rgba(15,42,32,0.02) 75%, rgba(11,26,20,0.28) 100%);
+    background:linear-gradient(180deg,
+        rgba(11,26,20,0) 0%,
+        rgba(11,26,20,0) 55%,
+        rgba(11,26,20,0.55) 78%,
+        rgba(8,20,15,0.94) 100%
+    );
 }
 
 .al-brand-content{
     position:relative;
     z-index:1;
+    width:100%;
+    padding:36px 48px 40px;
     display:flex;
     flex-direction:column;
-    align-items:center;
-    text-align:center;
-    max-width:360px;
+    align-items:flex-start;
 }
 
 .al-brand-logo{
-    font-size:24px;
+    font-size:22px;
     font-weight:700;
     letter-spacing:-.01em;
     display:flex;
     flex-direction:column;
-    align-items:center;
     gap:6px;
     color:#fff;
-    text-shadow:0 2px 10px rgba(0,0,0,.4);
 }
 
 .al-brand-logo-word{
@@ -138,25 +140,25 @@ what the portal is for.
 }
 
 .al-brand-verse{
-    margin-top:28px;
-    padding-top:24px;
-    border-top:1px solid rgba(255,255,255,.22);
+    margin-top:20px;
+    padding-top:18px;
+    border-top:1px solid rgba(255,255,255,.18);
 }
 
 .al-brand-verse-ar{
     font-family:'Playfair Display', serif;
-    font-size:19px;
+    font-size:17px;
     line-height:1.7;
     color:#fff;
-    text-shadow:0 2px 10px rgba(0,0,0,.4);
-    margin-bottom:8px;
+    margin-bottom:6px;
     direction:rtl;
+    text-align:right;
 }
 
 .al-brand-verse-en{
-    font-size:12.5px;
+    font-size:12px;
     font-style:italic;
-    color:var(--brand-gold);
+    color:rgba(255,255,255,.7);
     letter-spacing:.01em;
 }
 
