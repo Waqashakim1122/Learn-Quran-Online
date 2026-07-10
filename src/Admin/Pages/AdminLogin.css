@@ -23,6 +23,10 @@
     --danger-bg:#FEE2E2;
     --danger-fg:#DC2626;
 
+    --warning-bg:#FEF3C7;
+    --warning-fg:#B45309;
+    --warning-border:#FDE68A;
+
     --info:#2563EB;
     --info-bg:#DBEAFE;
 
@@ -209,6 +213,12 @@ ALERT
     flex-shrink:0;
 }
 
+.al-alert-warning{
+    background:var(--warning-bg);
+    color:var(--warning-fg);
+    border:1px solid var(--warning-border);
+}
+
 /* ======================================
 FIELDS
 ====================================== */
@@ -262,6 +272,12 @@ FIELDS
     box-shadow:0 0 0 3px rgba(37,99,235,.1);
 }
 
+.al-input-wrap input:disabled{
+    background:var(--hover);
+    color:var(--muted);
+    cursor:not-allowed;
+}
+
 .al-eye-btn{
     position:absolute;
     right:6px;
@@ -277,9 +293,14 @@ FIELDS
     transition:color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
 }
 
-.al-eye-btn:hover{
+.al-eye-btn:hover:not(:disabled){
     color:var(--primary);
     background:var(--hover);
+}
+
+.al-eye-btn:disabled{
+    color:var(--border-strong);
+    cursor:not-allowed;
 }
 
 /* ======================================
@@ -329,6 +350,28 @@ SUBMIT
 }
 
 /* ======================================
+SECURITY NOTE
+====================================== */
+
+.al-security-note{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px solid var(--border);
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.5;
+}
+
+.al-security-note svg{
+    flex-shrink:0;
+    margin-top:2px;
+    color:var(--secondary);
+}
+
+/* ======================================
 BACK LINK
 ====================================== */
 
@@ -337,7 +380,7 @@ BACK LINK
     align-items:center;
     justify-content:center;
     gap:6px;
-    margin-top:22px;
+    margin-top:18px;
     color:var(--secondary);
     font-size:13.5px;
     font-weight:600;
