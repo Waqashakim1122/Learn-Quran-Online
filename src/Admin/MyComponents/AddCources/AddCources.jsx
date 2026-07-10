@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Form, Button, Card, Alert, Spinner } from 'react-bootstrap';
 import AdminSidebar from '../Sidebar/Sidebar';
 import AdminNavbar from '../AdminNavebar/Adminnavbar';
 import supabase from '../../../lib/supabaseClient';
@@ -32,10 +31,8 @@ const IMAGE_PREVIEW_DEBOUNCE_MS = 400;
 const MESSAGE_AUTO_DISMISS_MS = 6000;
 
 /* ============================================================
-   Field-level validation
-   Kept as a pure function (name, value) -> error string so it can
-   be reused for both live (onChange) and on-blur/on-submit checks
-   without duplicating rules.
+   Field-level validation — pure function, reused for
+   onChange / onBlur / onSubmit checks.
 ============================================================ */
 
 const validateField = (name, value) => {
@@ -76,21 +73,61 @@ const validateAll = (form) => {
     return nextErrors;
 };
 
+/* ================= ICONS (same set as Enrollments) ================= */
+
+const IconArrowLeft = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <line x1="19" y1="12" x2="5" y2="12" />
+        <polyline points="12 19 5 12 12 5" />
+    </svg>
+);
+
+const IconPlus = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+);
+
+const IconSpinner = () => (
+    <svg className="ac-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+        <path d="M21 12a9 9 0 11-9-9" strokeLinecap="round" />
+    </svg>
+);
+
+const IconAlertCircle = () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
+);
+
+const IconCheckCircle = () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="16 9 11 14 8 11" />
+    </svg>
+);
+
+const IconClose = () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+);
+
 const AddCourse = () => {
     const navigate = useNavigate();
 
-    // Sidebar (mobile off-canvas) state — required by AdminSidebar's
-    // toggleSidebar prop; without it, nav links call an undefined
-    // handler and the sidebar has no way to open below 900px.
     const [showSidebar, setShowSidebar] = useState(false);
     const toggleSidebar = () => setShowSidebar((prev) => !prev);
 
     const [form, setForm] = useState(EMPTY_FORM);
     const [errors, setErrors] = useState({});
     const [touched, setTouched] = useState({});
-    const [validated, setValidated] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState(null); // { type, text }
+    const [message, setMessage] = useState(null); // { type: 'success' | 'danger', text }
     const [imageStatus, setImageStatus] = useState('idle'); // idle | loading | ok | error
 
     const dismissTimer = useRef(null);
@@ -163,14 +200,12 @@ const AddCourse = () => {
         setForm(EMPTY_FORM);
         setErrors({});
         setTouched({});
-        setValidated(false);
         setImageStatus('idle');
         firstFieldRef.current?.focus();
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setValidated(true);
 
         const nextErrors = validateAll(form);
         setErrors(nextErrors);
@@ -207,9 +242,9 @@ const AddCourse = () => {
         }
     };
 
-    const fieldState = (name) => {
-        if (!touched[name]) return {};
-        return errors[name] ? { isInvalid: true } : { isValid: true };
+    const fieldClass = (name) => {
+        if (!touched[name]) return 'ac-input';
+        return errors[name] ? 'ac-input invalid' : 'ac-input valid';
     };
 
     return (
@@ -235,288 +270,309 @@ const AddCourse = () => {
                         ☰ Menu
                     </button>
 
-                    <Container fluid className="add-course-page">
-                        <Row className="justify-content-center">
-                            <Col lg={11} xl={10}>
+                    {/* ================= HEADER ================= */}
 
-                                <div className="add-course-header">
-                                    <div>
-                                        <span className="add-course-eyebrow">Course Catalog</span>
-                                        <h1 className="add-course-title">Add New Course</h1>
-                                        <p className="add-course-subtitle">
-                                            Create a new course listing for the Learn Quran Online catalog.
-                                        </p>
+                    <div className="ac-header">
+
+                        <div>
+                            <h1>Add New Course</h1>
+                            <p>Create a new course listing for the Learn Quran Online catalog.</p>
+                        </div>
+
+                        <button
+                            type="button"
+                            className="ac-back-btn"
+                            onClick={() => navigate('/courselist')}
+                        >
+                            <IconArrowLeft />
+                            Back to Courses
+                        </button>
+
+                    </div>
+
+                    {/* ================= ALERT ================= */}
+
+                    {message && (
+                        <div className={`ac-alert ${message.type}`} role="alert">
+                            {message.type === 'success' ? <IconCheckCircle /> : <IconAlertCircle />}
+                            <span>{message.text}</span>
+                            <button
+                                type="button"
+                                className="ac-alert-close"
+                                onClick={() => setMessage(null)}
+                                aria-label="Dismiss message"
+                            >
+                                <IconClose />
+                            </button>
+                        </div>
+                    )}
+
+                    {/* ================= FORM + PREVIEW ================= */}
+
+                    <div className="ac-grid">
+
+                        <div className="ac-form-card">
+
+                            <form onSubmit={handleSubmit} noValidate>
+
+                                <fieldset className="ac-section">
+
+                                    <legend>Course Details</legend>
+
+                                    <div className="ac-field">
+                                        <label htmlFor="courseTitle">
+                                            Course Title <span className="ac-required">*</span>
+                                        </label>
+                                        <input
+                                            ref={firstFieldRef}
+                                            id="courseTitle"
+                                            type="text"
+                                            name="title"
+                                            placeholder="e.g. Quran Nazra"
+                                            value={form.title}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            maxLength={LIMITS.title}
+                                            className={fieldClass('title')}
+                                        />
+                                        <div className="ac-field-footer">
+                                            {touched.title && errors.title ? (
+                                                <span className="ac-field-error">{errors.title}</span>
+                                            ) : <span />}
+                                            <span className="ac-char-count">{form.title.length}/{LIMITS.title}</span>
+                                        </div>
                                     </div>
-                                    <Button
+
+                                    <div className="ac-field">
+                                        <label htmlFor="courseDescription">
+                                            Course Description <span className="ac-required">*</span>
+                                        </label>
+                                        <textarea
+                                            id="courseDescription"
+                                            rows={4}
+                                            name="description"
+                                            placeholder="Describe what students will learn in this course"
+                                            value={form.description}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            maxLength={LIMITS.description}
+                                            className={fieldClass('description')}
+                                        />
+                                        <div className="ac-field-footer">
+                                            {touched.description && errors.description ? (
+                                                <span className="ac-field-error">{errors.description}</span>
+                                            ) : <span />}
+                                            <span className="ac-char-count">{form.description.length}/{LIMITS.description}</span>
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+
+                                <fieldset className="ac-section">
+
+                                    <legend>Media</legend>
+
+                                    <div className="ac-field">
+                                        <label htmlFor="courseImageURL">
+                                            Course Image URL <span className="ac-required">*</span>
+                                        </label>
+                                        <input
+                                            id="courseImageURL"
+                                            type="text"
+                                            name="imageURL"
+                                            placeholder="e.g. https://images.unsplash.com/..."
+                                            value={form.imageURL}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            className={fieldClass('imageURL')}
+                                        />
+                                        {touched.imageURL && errors.imageURL ? (
+                                            <span className="ac-field-error">{errors.imageURL}</span>
+                                        ) : (
+                                            <span className="ac-field-hint">
+                                                Paste a direct image link. It updates the preview on the right as you type.
+                                            </span>
+                                        )}
+                                    </div>
+
+                                </fieldset>
+
+                                <fieldset className="ac-section ac-section--last">
+
+                                    <legend>Scheduling &amp; Pricing</legend>
+
+                                    <div className="ac-field-row">
+
+                                        <div className="ac-field">
+                                            <label htmlFor="courseDuration">
+                                                Duration <span className="ac-required">*</span>
+                                            </label>
+                                            <input
+                                                id="courseDuration"
+                                                type="text"
+                                                name="duration"
+                                                placeholder="e.g. 3 Months"
+                                                value={form.duration}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                className={fieldClass('duration')}
+                                            />
+                                            {touched.duration && errors.duration && (
+                                                <span className="ac-field-error">{errors.duration}</span>
+                                            )}
+                                        </div>
+
+                                        <div className="ac-field">
+                                            <label htmlFor="courseLevel">
+                                                Level <span className="ac-required">*</span>
+                                            </label>
+                                            <select
+                                                id="courseLevel"
+                                                name="level"
+                                                value={form.level}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                className={fieldClass('level')}
+                                            >
+                                                <option value="">Select Level</option>
+                                                {LEVEL_OPTIONS.map((lvl) => (
+                                                    <option key={lvl} value={lvl}>{lvl}</option>
+                                                ))}
+                                            </select>
+                                            {touched.level && errors.level && (
+                                                <span className="ac-field-error">{errors.level}</span>
+                                            )}
+                                        </div>
+
+                                        <div className="ac-field">
+                                            <label htmlFor="coursePrice">
+                                                Price <span className="ac-required">*</span>
+                                            </label>
+                                            <input
+                                                id="coursePrice"
+                                                type="text"
+                                                name="price"
+                                                placeholder="e.g. $20/month"
+                                                value={form.price}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                className={fieldClass('price')}
+                                            />
+                                            {touched.price && errors.price && (
+                                                <span className="ac-field-error">{errors.price}</span>
+                                            )}
+                                        </div>
+
+                                    </div>
+
+                                </fieldset>
+
+                                <div className="ac-form-actions">
+
+                                    <button
                                         type="button"
-                                        className="add-course-back-btn"
-                                        onClick={() => navigate('/courselist')}
+                                        className="ac-clear-link"
+                                        onClick={resetForm}
+                                        disabled={loading}
                                     >
-                                        <span aria-hidden="true">&larr;</span> Back to Courses
-                                    </Button>
+                                        Clear form
+                                    </button>
+
+                                    <button
+                                        type="submit"
+                                        className="ac-submit-btn"
+                                        disabled={loading}
+                                    >
+                                        {loading ? (
+                                            <>
+                                                <IconSpinner />
+                                                Adding Course&hellip;
+                                            </>
+                                        ) : (
+                                            <>
+                                                <IconPlus />
+                                                Add Course
+                                            </>
+                                        )}
+                                    </button>
+
                                 </div>
 
-                                {message && (
-                                    <Alert
-                                        variant={message.type}
-                                        onClose={() => setMessage(null)}
-                                        dismissible
-                                        role="alert"
-                                        className="add-course-alert"
-                                    >
-                                        {message.text}
-                                    </Alert>
-                                )}
+                            </form>
 
-                                <Row className="g-4">
-                                    <Col lg={7}>
-                                        <Card className="add-course-card">
-                                            <Card.Body>
-                                                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                        </div>
 
-                                                    <fieldset className="form-section">
-                                                        <legend className="form-section-title">Course Details</legend>
+                        {/* ================= LIVE PREVIEW ================= */}
 
-                                                        <Form.Group className="mb-3" controlId="courseTitle">
-                                                            <Form.Label>
-                                                                Course Title <span className="required-mark">*</span>
-                                                            </Form.Label>
-                                                            <Form.Control
-                                                                ref={firstFieldRef}
-                                                                type="text"
-                                                                name="title"
-                                                                placeholder="e.g. Quran Nazra"
-                                                                value={form.title}
-                                                                onChange={handleChange}
-                                                                onBlur={handleBlur}
-                                                                maxLength={LIMITS.title}
-                                                                {...fieldState('title')}
-                                                            />
-                                                            <div className="field-footer">
-                                                                <Form.Control.Feedback type="invalid">
-                                                                    {errors.title}
-                                                                </Form.Control.Feedback>
-                                                                <span className="char-count">
-                                                                    {form.title.length}/{LIMITS.title}
-                                                                </span>
-                                                            </div>
-                                                        </Form.Group>
+                        <div className="ac-preview-rail">
 
-                                                        <Form.Group controlId="courseDescription">
-                                                            <Form.Label>
-                                                                Course Description <span className="required-mark">*</span>
-                                                            </Form.Label>
-                                                            <Form.Control
-                                                                as="textarea"
-                                                                rows={4}
-                                                                name="description"
-                                                                placeholder="Describe what students will learn in this course"
-                                                                value={form.description}
-                                                                onChange={handleChange}
-                                                                onBlur={handleBlur}
-                                                                maxLength={LIMITS.description}
-                                                                {...fieldState('description')}
-                                                            />
-                                                            <div className="field-footer">
-                                                                <Form.Control.Feedback type="invalid">
-                                                                    {errors.description}
-                                                                </Form.Control.Feedback>
-                                                                <span className="char-count">
-                                                                    {form.description.length}/{LIMITS.description}
-                                                                </span>
-                                                            </div>
-                                                        </Form.Group>
-                                                    </fieldset>
+                            <span className="ac-preview-eyebrow">How it will appear</span>
 
-                                                    <fieldset className="form-section">
-                                                        <legend className="form-section-title">Media</legend>
+                            <div className="ac-preview-card">
 
-                                                        <Form.Group controlId="courseImageURL">
-                                                            <Form.Label>
-                                                                Course Image URL <span className="required-mark">*</span>
-                                                            </Form.Label>
-                                                            <Form.Control
-                                                                type="text"
-                                                                name="imageURL"
-                                                                placeholder="e.g. https://images.unsplash.com/..."
-                                                                value={form.imageURL}
-                                                                onChange={handleChange}
-                                                                onBlur={handleBlur}
-                                                                {...fieldState('imageURL')}
-                                                            />
-                                                            <Form.Control.Feedback type="invalid">
-                                                                {errors.imageURL}
-                                                            </Form.Control.Feedback>
-                                                            <Form.Text className="field-hint">
-                                                                Paste a direct image link. It updates the preview on the right as you type.
-                                                            </Form.Text>
-                                                        </Form.Group>
-                                                    </fieldset>
+                                <div className="ac-preview-image-wrap">
 
-                                                    <fieldset className="form-section form-section--last">
-                                                        <legend className="form-section-title">Scheduling &amp; Pricing</legend>
+                                    {imageStatus === 'ok' && (
+                                        <img
+                                            src={form.imageURL.trim()}
+                                            alt={form.title || 'Course preview'}
+                                            className="ac-preview-image"
+                                        />
+                                    )}
 
-                                                        <Row className="g-3">
-                                                            <Col sm={4}>
-                                                                <Form.Group controlId="courseDuration">
-                                                                    <Form.Label>
-                                                                        Duration <span className="required-mark">*</span>
-                                                                    </Form.Label>
-                                                                    <Form.Control
-                                                                        type="text"
-                                                                        name="duration"
-                                                                        placeholder="e.g. 3 Months"
-                                                                        value={form.duration}
-                                                                        onChange={handleChange}
-                                                                        onBlur={handleBlur}
-                                                                        {...fieldState('duration')}
-                                                                    />
-                                                                    <Form.Control.Feedback type="invalid">
-                                                                        {errors.duration}
-                                                                    </Form.Control.Feedback>
-                                                                </Form.Group>
-                                                            </Col>
-                                                            <Col sm={4}>
-                                                                <Form.Group controlId="courseLevel">
-                                                                    <Form.Label>
-                                                                        Level <span className="required-mark">*</span>
-                                                                    </Form.Label>
-                                                                    <Form.Select
-                                                                        name="level"
-                                                                        value={form.level}
-                                                                        onChange={handleChange}
-                                                                        onBlur={handleBlur}
-                                                                        {...fieldState('level')}
-                                                                    >
-                                                                        <option value="">Select Level</option>
-                                                                        {LEVEL_OPTIONS.map((lvl) => (
-                                                                            <option key={lvl} value={lvl}>{lvl}</option>
-                                                                        ))}
-                                                                    </Form.Select>
-                                                                    <Form.Control.Feedback type="invalid">
-                                                                        {errors.level}
-                                                                    </Form.Control.Feedback>
-                                                                </Form.Group>
-                                                            </Col>
-                                                            <Col sm={4}>
-                                                                <Form.Group controlId="coursePrice">
-                                                                    <Form.Label>
-                                                                        Price <span className="required-mark">*</span>
-                                                                    </Form.Label>
-                                                                    <Form.Control
-                                                                        type="text"
-                                                                        name="price"
-                                                                        placeholder="e.g. $20/month"
-                                                                        value={form.price}
-                                                                        onChange={handleChange}
-                                                                        onBlur={handleBlur}
-                                                                        {...fieldState('price')}
-                                                                    />
-                                                                    <Form.Control.Feedback type="invalid">
-                                                                        {errors.price}
-                                                                    </Form.Control.Feedback>
-                                                                </Form.Group>
-                                                            </Col>
-                                                        </Row>
-                                                    </fieldset>
-
-                                                    <div className="add-course-actions">
-                                                        <button
-                                                            type="button"
-                                                            className="add-course-clear-link"
-                                                            onClick={resetForm}
-                                                            disabled={loading}
-                                                        >
-                                                            Clear form
-                                                        </button>
-                                                        <Button
-                                                            variant="primary"
-                                                            type="submit"
-                                                            className="add-course-submit"
-                                                            disabled={loading}
-                                                        >
-                                                            {loading ? (
-                                                                <>
-                                                                    <Spinner
-                                                                        as="span"
-                                                                        animation="border"
-                                                                        size="sm"
-                                                                        role="status"
-                                                                        aria-hidden="true"
-                                                                        className="me-2"
-                                                                    />
-                                                                    Adding Course&hellip;
-                                                                </>
-                                                            ) : (
-                                                                <>
-                                                                    <span className="add-course-submit-icon" aria-hidden="true">+</span>
-                                                                    Add Course
-                                                                </>
-                                                            )}
-                                                        </Button>
-                                                    </div>
-                                                </Form>
-                                            </Card.Body>
-                                        </Card>
-                                    </Col>
-
-                                    <Col lg={5}>
-                                        <div className="preview-rail">
-                                            <span className="preview-eyebrow">How it will appear</span>
-                                            <div className="preview-course-card">
-                                                <div className="preview-image-wrap">
-                                                    {imageStatus === 'ok' && (
-                                                        <img
-                                                            src={form.imageURL.trim()}
-                                                            alt={form.title || 'Course preview'}
-                                                            className="preview-image"
-                                                        />
-                                                    )}
-                                                    {imageStatus === 'loading' && (
-                                                        <div className="preview-placeholder">
-                                                            <Spinner animation="border" size="sm" />
-                                                            <span>Loading image&hellip;</span>
-                                                        </div>
-                                                    )}
-                                                    {imageStatus === 'error' && (
-                                                        <div className="preview-placeholder preview-placeholder--error">
-                                                            <span>Image could not be loaded</span>
-                                                        </div>
-                                                    )}
-                                                    {imageStatus === 'idle' && (
-                                                        <div className="preview-placeholder">
-                                                            <span>Image preview will appear here</span>
-                                                        </div>
-                                                    )}
-                                                    {form.level && (
-                                                        <span className="preview-level-pill">{form.level}</span>
-                                                    )}
-                                                </div>
-
-                                                <div className="preview-body">
-                                                    <div className="preview-title">
-                                                        {form.title || 'Course title'}
-                                                    </div>
-                                                    {form.duration && (
-                                                        <div className="preview-duration">{form.duration}</div>
-                                                    )}
-                                                    <p className="preview-description">
-                                                        {form.description || 'Course description will appear here as you type.'}
-                                                    </p>
-                                                    <div className="preview-footer">
-                                                        <span className="preview-price">
-                                                            {form.price || 'Price'}
-                                                        </span>
-                                                        <span className="preview-cta">Enroll Now</span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    {imageStatus === 'loading' && (
+                                        <div className="ac-preview-placeholder">
+                                            <IconSpinner />
+                                            <span>Loading image&hellip;</span>
                                         </div>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                    </Container>
+                                    )}
+
+                                    {imageStatus === 'error' && (
+                                        <div className="ac-preview-placeholder error">
+                                            <span>Image could not be loaded</span>
+                                        </div>
+                                    )}
+
+                                    {imageStatus === 'idle' && (
+                                        <div className="ac-preview-placeholder">
+                                            <span>Image preview will appear here</span>
+                                        </div>
+                                    )}
+
+                                    {form.level && (
+                                        <span className="ac-preview-level-pill">{form.level}</span>
+                                    )}
+
+                                </div>
+
+                                <div className="ac-preview-body">
+
+                                    <div className="ac-preview-title">
+                                        {form.title || 'Course title'}
+                                    </div>
+
+                                    {form.duration && (
+                                        <div className="ac-preview-duration">{form.duration}</div>
+                                    )}
+
+                                    <p className="ac-preview-description">
+                                        {form.description || 'Course description will appear here as you type.'}
+                                    </p>
+
+                                    <div className="ac-preview-footer">
+                                        <span className="ac-preview-price">
+                                            {form.price || 'Price'}
+                                        </span>
+                                        <span className="ac-preview-cta">Enroll Now</span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
 
                 </main>
 
